@@ -17,7 +17,7 @@ import com.jing.web.model.User;
 import com.jing.web.util.database.JRowMapper;
 
 @Repository
-public class UserDaoImpl2 implements UserDao{
+public class UserDaoImpl2 {
 	@Autowired
 	private NamedParameterJdbcTemplate template;
 

@@ -1,6 +1,7 @@
 package com.jing.web.model;
 
 import java.util.Date;
+import java.util.List;
 
 import com.jing.web.util.database.AbstractJModel;
 import com.jing.web.util.database.PrimaryKey;
@@ -22,6 +23,8 @@ public class User extends AbstractJModel implements IRedisSupport{
 	private Date updatedAt;
 	@Version
 	private int version;
+	
+	private List<String> names;
 	
 	public int getVersion() {
 		return version;
@@ -69,5 +72,11 @@ public class User extends AbstractJModel implements IRedisSupport{
 
 	public String uid() {
 		return String.valueOf(id);
+	}
+	public List<String> getNames() {
+		return names;
+	}
+	public void setNames(List<String> names) {
+		this.names = names;
 	}
 }
