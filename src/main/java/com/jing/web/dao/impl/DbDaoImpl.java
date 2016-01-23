@@ -39,6 +39,7 @@ public class DbDaoImpl<T>  implements DbDao<T>{
 		this.clazz = clazz;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void init(){
 		Type t = getClass().getGenericSuperclass();
         if(t instanceof ParameterizedType){

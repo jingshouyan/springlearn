@@ -66,13 +66,13 @@ public class UserDaoTest {
 		}
 		
 	}
-//	@Test
+	@Test
 	public void batchInsert(){
 		List<User> users = new ArrayList<User>();
 		for(int i=0;i<1000;i++){
 			User user = new User();
 //			user.setId(i+1000000l);
-			user.setName("旺旺");
+//			user.setName("旺旺");
 			user.setAge(i+900000);
 			user.setGender("dog");
 			user.setVersion(0);
@@ -112,7 +112,7 @@ public class UserDaoTest {
 		long[]  ids = {16,17,18};
 		dbDao.delete(ids);
 	}
-	@Test
+//	@Test
 	public void page(){
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("name", "旺旺");

@@ -10,26 +10,21 @@
 	<!-- 错误日志 -->
 	<appender name="errorFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-<!-- 		<File>D:/log/error</File> -->
 		<encoder>
-			<pattern>%d %5p |%-8.8thread %36.36c:%-5L - %m%n</pattern>
+			<pattern>%d %-5p [%thread] %c:%L - %m%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>d:/log/${AppName}/error_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>log/${AppName}/log_%d{yyyy-MM-dd}.log</fileNamePattern>
 		</rollingPolicy>
-		<!-- 日志过滤器 -->
-		<!-- <filter class="ch.qos.logback.classic.filter.LevelFilter"> <level>DEBUG</level> 
-			<onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> </filter> -->
 	</appender>
 	<!-- 数据库访问较慢的语句 -->
 	<appender name="sqlFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>d:/log/sql/slow</File>
 		<encoder>
 			<pattern>%d [%thread] %c:%L-%m%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>d:/log/sql/slow_%d{yyyy-MM-dd}</fileNamePattern>
+			<fileNamePattern>log/${AppName}/sql_%d{yyyy-MM-dd}.log</fileNamePattern>
 		</rollingPolicy>
 	</appender>
 	<logger name="com.alibaba.druid.filter.stat.StatFilter" additivity="false" level="DEBUG">
