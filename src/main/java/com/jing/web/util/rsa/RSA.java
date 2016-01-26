@@ -14,6 +14,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import sun.misc.BASE64Decoder;
 
+@SuppressWarnings("restriction")
 public class RSA {
     public static String sign(String data, String privateKey)
     {

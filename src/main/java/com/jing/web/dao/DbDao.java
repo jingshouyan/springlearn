@@ -3,7 +3,6 @@ package com.jing.web.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.cache.annotation.Cacheable;
 
 import com.jing.web.util.database.Page;
 

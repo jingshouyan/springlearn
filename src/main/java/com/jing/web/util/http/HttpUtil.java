@@ -9,8 +9,10 @@
 
 package com.jing.web.util.http;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +38,10 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
@@ -62,8 +67,8 @@ import com.alibaba.fastjson.JSONObject;
 public class HttpUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
-	
-	public static final String DEFAULT_CHARSET="utf-8";
+
+	public static final String DEFAULT_CHARSET = "utf-8";
 
 	/**
 	 * 
@@ -124,52 +129,57 @@ public class HttpUtil {
 	public static Response post(String url, Map<String, String> params) {
 		return post(url, params, null, DEFAULT_CHARSET);
 	}
-	
+
 	/**
 	 * 
 	 * postJson:使用httpClient发送post json请求 . <br/>
 	 *
 	 * @author bxy-jing
 	 * @param url
-	 * @param object 需要传递的对象
+	 * @param object
+	 *            需要传递的对象
 	 * @return Response
 	 * @since JDK 1.6
 	 */
-	public static Response postJson(String url,Object object){
+	public static Response postJson(String url, Object object) {
 		return postJson(url, object, null, DEFAULT_CHARSET);
 	}
+
 	/**
 	 * 
 	 * postJson:使用httpClient发送post json请求 . <br/>
 	 *
 	 * @author bxy-jing
 	 * @param url
-	 * @param object 需要传递的对象
-	 * @param headers 
+	 * @param object
+	 *            需要传递的对象
+	 * @param headers
 	 * @return Response
 	 * @since JDK 1.6
 	 */
-	public static Response postJson(String url,Object object,Map<String,String>headers){
+	public static Response postJson(String url, Object object, Map<String, String> headers) {
 		return postJson(url, object, headers, DEFAULT_CHARSET);
 	}
-	
+
 	/**
 	 * 
 	 * postJson:使用httpClient发送post json请求 . <br/>
 	 *
 	 * @author bxy-jing
 	 * @param url
-	 * @param object 需要传递的对象
-	 * @param headers 
+	 * @param object
+	 *            需要传递的对象
+	 * @param headers
 	 * @param charset
 	 * @return Response
 	 * @since JDK 1.6
 	 */
-	public static Response postJson(String url,Object object,Map<String,String>headers,String charset){
-		if(null==headers){
-			headers = new HashMap<String,String>();
+	public static Response postJson(String url, Object object, Map<String, String> headers, String charset) {
+		if (null == headers) {
+			headers = new HashMap<String, String>();
 		}
 		headers.put("Content-Type", "application/json");
+		// headers.put("Content-Type", "application/x-www-form-urlencoded");
 		String data = JSON.toJSONString(object);
 		return postStr(url, data, headers, charset);
 	}
@@ -232,7 +242,8 @@ public class HttpUtil {
 			close(client, httpResponse);
 		}
 		long endTime = System.currentTimeMillis();
-		logger.debug("post-response|url>>>{}|used>>>{}ms|response>>>{}", url,endTime-startTime, JSON.toJSONString(response));
+		logger.debug("post-response|url>>>{}|used>>>{}ms|response>>>{}", url, endTime - startTime,
+				JSON.toJSONString(response));
 		return response;
 	}
 
@@ -253,8 +264,8 @@ public class HttpUtil {
 	 */
 	public static Response post(String url, Map<String, String> params, Map<String, String> headers, String charset) {
 		String paramsStr = URLEncodedUtils.format(map2NameValuePairs(params), charset);
-		if(null==headers){
-			headers = new HashMap<String,String>();
+		if (null == headers) {
+			headers = new HashMap<String, String>();
 		}
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		return postStr(url, paramsStr, headers, charset);
@@ -302,7 +313,100 @@ public class HttpUtil {
 
 		}
 		long endTime = System.currentTimeMillis();
-		logger.debug("get-response|url>>>{}|used>>>{}ms|response>>>{}", url,endTime-startTime, JSON.toJSONString(response));
+		logger.debug("get-response|url>>>{}|used>>>{}ms|response>>>{}", url, endTime - startTime,
+				JSON.toJSONString(response));
+		return response;
+	}
+	/**
+	 * 
+	 * upload:httpClient上传文件. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param url
+	 * @param files 文件map
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static Response upload(String url, Map<String, String> files){
+		return upload(url, files, null);
+	}
+	/**
+	 * 
+	 * upload:httpClient上传文件. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param url
+	 * @param files 文件map
+	 * @param params 其他参数
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static Response upload(String url, Map<String, String> files,Map<String, String> params){
+		return upload(url, files, params, null);
+	}
+	/**
+	 * 
+	 * upload:httpClient上传文件. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param url
+	 * @param files 文件map
+	 * @param params 其他参数
+	 * @param headers 头文件
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static Response upload(String url, Map<String, String> files,Map<String, String> params, Map<String, String> headers){
+		return upload(url, files, params, headers, "utf-8");
+	}
+	/**
+	 * 
+	 * upload:httpClient上传文件. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param url
+	 * @param files 文件map
+	 * @param params 其他参数
+	 * @param headers 头文件
+	 * @param charset
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static Response upload(String url, Map<String, String> files,Map<String, String> params, Map<String, String> headers, String charset) {
+		logger.debug("upload-send|url>>>{}|files>>>{}|params>>>{}|headers>>>{}", url,files, params, headers);
+		long startTime = System.currentTimeMillis();
+		Response response = new Response();
+		CloseableHttpClient client = createClient(url);
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setHeaders(map2Headers(headers));
+		CloseableHttpResponse httpResponse = null;
+		try {
+			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			builder.setCharset(Charset.forName(charset));
+			if(null!=files&&!files.isEmpty()){
+				for(Entry<String,String>entry:files.entrySet()){
+					builder.addPart(entry.getKey(), new FileBody(new File(entry.getValue())));
+				}
+			}
+			if(null!=params&&params.isEmpty()){
+				for(Entry<String,String> entry:params.entrySet()){					
+					builder.addTextBody(entry.getKey(), entry.getValue(), ContentType.TEXT_PLAIN);
+				}
+			}
+			HttpEntity entity = builder.build();
+			httpPost.setEntity(entity);
+			httpResponse = client.execute(httpPost);
+			response = formatResponse(httpResponse, charset);
+		} catch (Exception e) {
+			response.setReasonPhrase(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			close(client, httpResponse);
+		}
+
+		long endTime = System.currentTimeMillis();
+		logger.debug("upload-response|url>>>{}|used>>>{}ms|response>>>{}", url, endTime - startTime,
+				JSON.toJSONString(response));
 		return response;
 	}
 
@@ -473,8 +577,10 @@ public class HttpUtil {
 	}
 
 	public static void main(String[] args) {
-		 String url = "http://218.241.161.56:3801/server-redpack/RedPackController/send.do";
-//		String url = "https://www.baidu.com";
+
+		String url = "http://218.241.161.56:3801/server-redpack/RedPackController/send.do";
+		println(url);
+		// String url = "https://www.baidu.com";
 		Map<String, String> params = new HashMap<String, String>();
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Client-Key", "abc");

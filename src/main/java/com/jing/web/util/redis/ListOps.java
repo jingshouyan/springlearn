@@ -4,16 +4,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ListOps {
 
-	public static String keyPrefix = "";
 
-	@Resource
+	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	
 
 	/**
 	 * 
@@ -26,7 +27,7 @@ public class ListOps {
 	* @throws
 	 */
 	public Long lpush(String key, String value) {		
-		return stringRedisTemplate.opsForList().leftPush(keyPrefix + key, value);
+		return stringRedisTemplate.opsForList().leftPush(IRedisSupport.KEY_PREFIX + key, value);
 	}
 
 	/**
@@ -39,7 +40,7 @@ public class ListOps {
 	* @throws
 	 */
 	public String lpop(String key) {
-		return stringRedisTemplate.opsForList().leftPop(keyPrefix + key);
+		return stringRedisTemplate.opsForList().leftPop(IRedisSupport.KEY_PREFIX + key);
 	}
 
 	/**
@@ -53,7 +54,7 @@ public class ListOps {
 	* @throws
 	 */
 	public Long rpush(String key, String value) {
-		return stringRedisTemplate.opsForList().rightPush(keyPrefix + key, value);
+		return stringRedisTemplate.opsForList().rightPush(IRedisSupport.KEY_PREFIX + key, value);
 	}
 
 	/**
@@ -66,7 +67,7 @@ public class ListOps {
 	* @throws
 	 */
 	public String rpop(String key) {
-		return stringRedisTemplate.opsForList().rightPop(keyPrefix + key);
+		return stringRedisTemplate.opsForList().rightPop(IRedisSupport.KEY_PREFIX + key);
 	}
 
 	/**
@@ -79,7 +80,7 @@ public class ListOps {
 	* @throws
 	 */
 	public Long length(String key) {
-		return stringRedisTemplate.opsForList().size(keyPrefix + key);
+		return stringRedisTemplate.opsForList().size(IRedisSupport.KEY_PREFIX + key);
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class ListOps {
 	* @throws
 	 */
 	public List<String> range(String key, int start, int end) {
-		return stringRedisTemplate.opsForList().range(keyPrefix + key, start, end);
+		return stringRedisTemplate.opsForList().range(IRedisSupport.KEY_PREFIX + key, start, end);
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class ListOps {
 	* @throws
 	 */
 	public void remove(String key, long i, String value) {
-		stringRedisTemplate.opsForList().remove(keyPrefix + key, i, value);
+		stringRedisTemplate.opsForList().remove(IRedisSupport.KEY_PREFIX + key, i, value);
 	}
 
 	/**
@@ -122,7 +123,7 @@ public class ListOps {
 	* @throws
 	 */
 	public String index(String key, long index) {
-		return stringRedisTemplate.opsForList().index(keyPrefix + key, index);
+		return stringRedisTemplate.opsForList().index(IRedisSupport.KEY_PREFIX + key, index);
 	}
 
 	/**
@@ -136,7 +137,7 @@ public class ListOps {
 	* @throws
 	 */
 	public void set(String key, long index, String value) {
-		stringRedisTemplate.opsForList().set(keyPrefix + key, index, value);
+		stringRedisTemplate.opsForList().set(IRedisSupport.KEY_PREFIX + key, index, value);
 	}
 
 	/**
@@ -150,6 +151,6 @@ public class ListOps {
 	* @throws
 	 */
 	public void trim(String key, long start, int end) {
-		stringRedisTemplate.opsForList().trim(keyPrefix + key, start, end);
+		stringRedisTemplate.opsForList().trim(IRedisSupport.KEY_PREFIX + key, start, end);
 	}
 }
