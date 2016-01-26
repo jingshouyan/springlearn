@@ -357,7 +357,7 @@ public class HttpUtil {
 	 * @since JDK 1.6
 	 */
 	public static Response upload(String url, Map<String, String> files,Map<String, String> params, Map<String, String> headers){
-		return upload(url, files, params, headers, "utf-8");
+		return upload(url, files, params, headers, DEFAULT_CHARSET);
 	}
 	/**
 	 * 
