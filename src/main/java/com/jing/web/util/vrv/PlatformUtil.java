@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aspectj.weaver.JoinPointSignature;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jing.web.util.http.HttpUtil;
@@ -32,6 +34,7 @@ import com.jing.web.util.http.Response;
 public class PlatformUtil {
 	private String appID = "4395721494";
 	private String appSecret="wiVpM6MbEozRmzuHqTDrqw";
+	private String entID = "668";
 	
 	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
 	public static final String ACCESS_TOKEN_URL=BASE_URL+"token";
@@ -194,20 +197,110 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 	
+	public void groupRemove(String groupID){
+		String url = GROUP_REMOVE_URL+"?access_token="+accessToken()+"&lang="+DEFAULT_LANG+"&groupID="+groupID;
+		Map<String,String>params = new HashMap<String,String>();
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void groupInfo(String groupID){
+		String url = GROUP_INFO_URL;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("groupID", groupID);
+		params.put("access_token", accessToken());
+		params.put("lang",DEFAULT_LANG);
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	
+	public void groupList(String openID){
+		String url = GROUP_LIST_URL;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("access_token", accessToken());
+		params.put("openID",openID);
+		params.put("lang",DEFAULT_LANG);
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void groupRemoveMembers(String groupID,List<String> groupMembers){
+		String url = GROUP_REMOVE_MEMBERS_URL+"?access_token="+accessToken()+"&lang="+DEFAULT_LANG+"&groupID="+groupID;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("groupMembers",JSON.toJSONString(groupMembers));
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void groupAddMembers(String groupID,List<String> groupMembers){
+		String url = GROUP_ADD_MEMBERS_URL+"?access_token="+accessToken()+"&lang="+DEFAULT_LANG+"&groupID="+groupID;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("groupMembers",JSON.toJSONString(groupMembers));
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void groupGetMember(String groupID,String groupMemberID){
+		String url = GROUP_GET_MEMBER_URL;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("groupID", groupID);
+		params.put("groupMemberID", groupMemberID);
+		params.put("access_token", accessToken());
+		params.put("lang",DEFAULT_LANG);
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void groupGetMembers(String groupID,int pageNo){
+		String url = GROUP_GET_MEMBERS_URL;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("groupID", groupID);
+		params.put("pageNo", String.valueOf(pageNo));
+		params.put("access_token", accessToken());
+		params.put("lang",DEFAULT_LANG);
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void groupGetMembersPageTimetamp(String groupID){
+		String url = GROUP_GET_MEMBERS_PAGE_TIMESTAMP_URL;
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("groupID", groupID);
+		params.put("access_token", accessToken());
+		params.put("lang",DEFAULT_LANG);
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public void appUpdateAppInfo(List<Menu> menus){
+		String url = APP_UPDATE_APP_INFO+"?access_token="+accessToken()+"&accessType="+ACCESS_TYPE_CLIENT;
+		JSONObject appInfo = new JSONObject();
+		appInfo.put("appID", appID);
+		appInfo.put("entID", entID);
+		JSONObject appMenus = new JSONObject();
+		appMenus.put("menu", menus);
+		appInfo.put("appMenus", appMenus.toJSONString());
+		Map<String,String>params = new HashMap<String,String>();
+		params.put("appInfo",appInfo.toJSONString());
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
+	
 	public static void main(String[] args) {
-		String userToken="4395733301";	//4395732306  4395733301
+		String userToken="4395733556";	//4395732306  4395733301 4395733556
 		PlatformUtil platformUtil = new PlatformUtil();
 //		String accessToken = platformUtil.accessToken();
 //		System.out.println(accessToken);
 //		platformUtil.userInfo("4395733301");
 		
-//		Message message = new Message();
-//		message.setSendUserID(platformUtil.appID);
-//		message.setReceTargetID("4395733301");
-//		message.setMessage("开放平台测试");
-//		message.setMessageType("2");
+		Message message = new Message();
+		message.setSendUserID(platformUtil.appID);
+		message.setReceTargetID(userToken);
+		message.setMessage("开放平台测试");
+		message.setMessageType("2");
 //		
-//		platformUtil.sendMsg(message);
+		platformUtil.sendMsg(message);
 //		String type="2";
 //		String file="d:/48540923dd54564ec40a9c82b3de9c82d1584f19.jpg";
 //		platformUtil.resourceUpload(type, file);
@@ -226,7 +319,7 @@ public class PlatformUtil {
 //		platformUtil.userBuddys(userToken,  1);
 //		platformUtil.userOrganization(userToken);
 //		platformUtil.userShareOption(userToken, 3);
-		platformUtil.userShareNotificationSwitch(userToken);
+//		platformUtil.userShareNotificationSwitch(userToken);
 		
 //		GroupInfo groupInfo = new GroupInfo();
 //		groupInfo.setGroupName("开放平台测试组");
@@ -240,8 +333,50 @@ public class PlatformUtil {
 //		initGroupMembers.add(4395733301l);
 //		initGroupMembers.add(4395732306l);
 //		groupInfo.setInitGroupMembers(initGroupMembers);
-//		platformUtil.groupCreate(groupInfo);//4404020002
+//		platformUtil.groupCreate(groupInfo);//4404020003
 		
+//		platformUtil.groupRemove("4404020002");
+		
+//		platformUtil.groupInfo("4404020003");
+		
+//		platformUtil.groupList("4395721494");
+//		List<String> members = new ArrayList<String>();
+//		members.add("4395732306");
+//		platformUtil.groupAddMembers("4404020003", members);
+//		platformUtil.groupRemoveMembers("4404020003", members);
+		
+//		platformUtil.groupGetMember("4404020003", "4395732306");
+//		platformUtil.groupGetMembers("4404020003", 1);
+//		platformUtil.groupGetMembersPageTimetamp("4404020003");
+		
+		List<Menu> menus = new ArrayList<Menu>();
+		Menu menu1 = new Menu();
+		menu1.setName("呵呵哒");
+		menu1.setType("view");
+		menu1.setUrl("http://www.baidu.com");
+		Menu menu2 = new Menu();
+		menu2.setName("赫赫");
+		menu2.setType("click");
+		menu2.setKey("CLICK_HEHE");
+		Menu menu3 = new Menu();
+		menu3.setName("菜单组");
+		List<Menu> ms = new ArrayList<Menu>();
+		Menu menu31 = new Menu();
+		menu31.setName("呵呵哒2");
+		menu31.setType("view");
+		menu31.setUrl("http://www.baidu.com");
+		ms.add(menu31);
+		Menu menu32 = new Menu();
+		menu32.setName("赫赫2");
+		menu32.setType("click");
+		menu32.setKey("CLICK_HEHE");
+		menu3.setSub_menus(ms);
+		menus.add(menu1);
+		menus.add(menu3);
+		menus.add(menu2);
+		ms.add(menu32);
+		
+//		platformUtil.appUpdateAppInfo(menus );
 	}
 }
 
