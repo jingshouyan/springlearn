@@ -45,6 +45,6 @@ Temporary Items
 .settings
 *.class
 
-.log
-/target
-/log
+*.log
+target
+log

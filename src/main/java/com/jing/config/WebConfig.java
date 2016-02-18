@@ -9,9 +9,14 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+
+import com.jing.web.interceptor.LogInterceptor;
+
+
 
 /**
  * 
@@ -88,12 +93,31 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 	    return new PropertySourcesPlaceholderConfigurer();
 	}
 	
-	
+	/**
+	 * 
+	 * logInterceptor:日志用拦截器. <br/>
+	 *
+	 * @author bxy-jing
+	 * @return
+	 * @since JDK 1.6
+	 */
+	@Bean
+	public LogInterceptor logInterceptor(){
+		return new LogInterceptor();
+	}
 	
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer){
 		configurer.enable();
 	}
 	
-	
+	/**
+	 * 
+	 * 注册拦截器
+	 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry)
+	 */
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(logInterceptor());
+	}
 }
