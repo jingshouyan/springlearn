@@ -503,7 +503,7 @@ public class DbDaoImpl<T>  implements DbDao<T>{
 		c.setGt(1000l);
 		c.setLte(100000l);
 		map.put("money",c);
-		Map<String,Object> map2 = new HashMap<String,Object>(null);
+//		Map<String,Object> map2 = new HashMap<String,Object>(null);
 		String where = dao.where(map);
 		System.out.println(where);
 		System.out.println(map);

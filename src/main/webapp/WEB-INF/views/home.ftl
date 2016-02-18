@@ -9,13 +9,13 @@
 <script type="text/javascript">
 	var websocket = null;
 	if ('WebSocket' in window) {
-		websocket = new WebSocket("ws://localhost:8080/springlearn/websocket/chatMessageServer.do");
+		websocket = new WebSocket("ws://192.168.116.116:8080/springlearn/websocket/chatMessageServer.do");
 	} 
 	else if ('MozWebSocket' in window) {
-		websocket = new MozWebSocket("ws://localhost:8080/springlearn/websocket/chatMessageServer.do");
+		websocket = new MozWebSocket("ws://192.168.116.116:8080/springlearn/websocket/chatMessageServer.do");
 	} 
 	else {
-		websocket = new SockJS("http://localhost:8080/springlearn/sockjs/chatMessageServer.do");
+		websocket = new SockJS("http://192.168.116.116:8080/springlearn/sockjs/chatMessageServer.do");
 	}
 	websocket.onopen = onOpen;
 	websocket.onmessage = onMessage;
