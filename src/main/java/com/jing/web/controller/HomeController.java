@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.jing.web.dao.DbDao;
 import com.jing.web.model.User;
+import com.jing.web.util.Constants;
 import com.jing.web.util.redis.ObjectOps;
 
 @Controller
@@ -29,10 +32,10 @@ public class HomeController {
 	@Autowired
 	private DbDao<User> dbDaoUser;	
 
-	
 	public HomeController() {
 		
 	}
+	
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	@ResponseBody
@@ -42,7 +45,9 @@ public class HomeController {
 	}
 
 	@RequestMapping("home")
-	public String home() {
+	public String home(HttpServletRequest request) {
+		String userid = UUID.randomUUID().toString();
+		request.getSession().setAttribute(Constants.SESSION_USER_ID, userid);
 		return "home";
 	}
 
@@ -50,7 +55,7 @@ public class HomeController {
 	@ResponseBody
 	public User getUser() {
 		dbDaoUser.setClass(User.class);
-		User user = dbDaoUser.find(21005);
+		User user = dbDaoUser.find(3031);
 		user.setCreatedAt(new Date());
 		return user;
 	}

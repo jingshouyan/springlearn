@@ -23,6 +23,8 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
  */
 @Configuration
 @EnableWebMvc//启用 spring mvc
+//不能在这里使用@EnableScheduling注解，否则会启动2个定时器处理器 
+//TODO: 查找原因 
 @ComponentScan("com.jing.web")//包扫描
 public class WebConfig extends WebMvcConfigurerAdapter{
 
@@ -86,8 +88,12 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 	    return new PropertySourcesPlaceholderConfigurer();
 	}
 	
+	
+	
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer){
 		configurer.enable();
 	}
+	
+	
 }

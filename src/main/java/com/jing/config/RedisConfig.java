@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 //import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 //import org.springframework.data.redis.serializer.StringRedisSerializer;
-
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -60,13 +60,13 @@ public class RedisConfig {
 		return new StringRedisTemplate(cf);
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisTemplate redisTemplate(RedisConnectionFactory cf){
 		RedisTemplate redis = new RedisTemplate();
 		redis.setConnectionFactory(cf);
-//		redis.setKeySerializer(new StringRedisSerializer());
-//		redis.setValueSerializer(new Jackson2JsonRedisSerializer<IRedisSupport>(IRedisSupport.class));
+		redis.setKeySerializer(new StringRedisSerializer());
+		redis.setValueSerializer(new StringRedisSerializer());
 		return redis;
 	}
 
