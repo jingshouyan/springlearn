@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +21,7 @@ import com.jing.config.DatabaseConfig;
 import com.jing.config.RedisConfig;
 import com.jing.config.RootConfig;
 import com.jing.config.WebConfig;
-import com.jing.config.WebSocketConfig;
+//import com.jing.config.WebSocketConfig;
 import com.jing.web.model.User;
 import com.jing.web.util.database.Compare;
 import com.jing.web.util.database.Page;
@@ -32,7 +31,7 @@ import com.jing.web.util.database.Page;
 		WebConfig.class, 
 		RootConfig.class, 
 //		RedisConfig.class, 
-		DatabaseConfig.class,
+//		DatabaseConfig.class,
 //		CacheConfig.class, 
 //		WebSocketConfig.class 
 		})
