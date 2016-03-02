@@ -10,14 +10,19 @@
 package com.jing.web.util.vrv;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aspectj.weaver.JoinPointSignature;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
 import com.jing.web.util.http.HttpUtil;
 import com.jing.web.util.http.Response;
 
@@ -33,35 +38,70 @@ import com.jing.web.util.http.Response;
  * @see
  */
 public class PlatformUtil {
-	private String appID = "4395721494";// 4395733556
-	private String appSecret = "wiVpM6MbEozRmzuHqTDrqw";
-	private String entID = "262";
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(PlatformUtil.class);
+	
+	private static String appID = "4395730591";// 4395733556
+	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
+	private static String entID = "262";	
+	private static String token="randomString123";
+	
+	private static AccessToken accessToken = new AccessToken();
+	//开放平台根路径
 	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";// http://192.168.0.60:3801/platform/platform/
 																								// ,http://test.linkdood.cn:10080/platform/platform/
+	//获取access_token的url地址
 	public static final String ACCESS_TOKEN_URL = BASE_URL + "token";
+	//发送普通消息的url地址
 	public static final String MESSAGE_SEND_URL = BASE_URL + "message/send";
+	//群发普通消息的url地址
 	public static final String MESSAGE_SENDS_URL = BASE_URL + "message/sends";
+	//分享通知接口的url地址
+	public static final String MESSAGE_NOTIFY_URL= BASE_URL+"message/notify";
+	//新增临时素材的url地址
 	public static final String RESOURCE_UPLOAD_URL = BASE_URL + "resource/upload";
+	//获取临时素材的url地址
 	public static final String RESOURCE_QUERY_URL = BASE_URL + "resource/query";
+	//获取user_token的url地址
 	public static final String USER_TOKEN_URL = BASE_URL + "userToken";
+	//获取用户基本信息的url地址
 	public static final String USER_INFO_URL = BASE_URL + "user/info";
+	//更新用户信息的url地址
 	public static final String USER_UPDATE_URL = BASE_URL + "user/update";
+	//获取好友列表分页时间戳的url地址
 	public static final String USER_BUDDYS_TIMESTAMP_URL = BASE_URL + "user/buddysTimestamp";
+	//获取用户好友关注列表的url地址
 	public static final String USER_BUDDYS_URL = BASE_URL + "user/buddys";
+	//获取用户好友列表 (不推荐使用，下个版本会废弃)的url地址
+	public static final String USER_ALL_BUDDYS_URL=BASE_URL+"user/allBuddys";
+	//获取用户所在组织信息的url地址
 	public static final String USER_ORGANIZATION_URL = BASE_URL + "user/organization";
+	//获取用户分享隐私设置的url地址
 	public static final String USER_SHARE_OPTIONS_URL = BASE_URL + "user/shareOption";
+	//获取用户分享更新通知的url地址
 	public static final String USER_SHARE_NOTIFICATION_SWITCH_URL = BASE_URL + "user/shareNotificationSwitch";
+	//创建群的url地址
 	public static final String GROUP_CREATE_URL = BASE_URL + "group/create";
+	//解散群的url地址
 	public static final String GROUP_REMOVE_URL = BASE_URL + "group/remove";
+	//获取群信息的url地址
 	public static final String GROUP_INFO_URL = BASE_URL + "group/info";
+	//获取群列表的url地址
 	public static final String GROUP_LIST_URL = BASE_URL + "group/list";
+	//移除群成员的url地址
 	public static final String GROUP_REMOVE_MEMBERS_URL = BASE_URL + "group/removeMembers";
+	//添加群成员的url地址
 	public static final String GROUP_ADD_MEMBERS_URL = BASE_URL + "group/addMembers";
+	//获取群成员信息的url地址
 	public static final String GROUP_GET_MEMBER_URL = BASE_URL + "group/getMember";
+	//获取群成员列表信息的url地址
 	public static final String GROUP_GET_MEMBERS_URL = BASE_URL + "group/getMembers";
+	//获取群成员列表页码时间戳的url地址
 	public static final String GROUP_GET_MEMBERS_PAGE_TIMESTAMP_URL = BASE_URL + "group/getMembersPageTimestamp";
+	//设置自定义菜单的url地址
 	public static final String APP_UPDATE_APP_INFO = BASE_URL + "app/updateAppInfo";
+	
+	
 
 	public static final String ACCESS_TYPE_CLIENT = "CLIENT";
 	public static final String DEFAULT_LANG = "zh_CN";
@@ -73,12 +113,80 @@ public class PlatformUtil {
 	 * 分享设置，拒绝
 	 */
 	public static final int SHARE_OPTION_DENY = 2;
+	/**
+	 * 群级别  1：临时群、2：普通群、3：高级群、4：超级群
+	 */
 	public static final int GROUP_LEVEL_TEMPORARY = 1;
 	public static final int GROUP_LEVEL_ORDINARY = 2;// ordinary
 	public static final int GROUP_LEVEL_SENIOR = 3; // senior
 	public static final int GROUP_LEVEL_SUPER = 4;
 
-	public String accessToken() {
+	/**
+	 * 
+	 * validToken:验证token. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param params
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static boolean validToken(Map<String,String> params){
+		String entid = params.get("entid");
+		String timestamp = params.get("timestamp");
+		String nonce = params.get("nonce");
+		String signature = params.get("signature");
+		if(entid==null||timestamp==null||timestamp==null||timestamp==null){
+			logger.info("params is not enough {}",params);
+			return false;
+		}
+		List<String> list = new ArrayList<>();
+		list.add(token);
+		list.add(entid);
+		list.add(timestamp);
+		list.add(nonce);
+		//字典排序
+		Collections.sort(list);
+		//拼接字符串
+		String str = StringUtils.arrayToDelimitedString(list.toArray(), "");
+		//sha1摘要算法
+		String shaStr = DigestUtils.shaHex(str);
+		//对比
+		return signature.equals(shaStr);
+	}
+	
+	/**
+	 * 
+	 * accessTokenWithCatch:获取accessToken基于缓存 <br/>
+	 *
+	 * @author bxy-jing
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static String accessTokenWithCatch(){
+		//如果缓存的accessToken可用，则直接返回
+		if(accessToken.enable()){
+			return accessToken.getTokenStr();
+		}
+		synchronized (PlatformUtil.class) {			
+			//请求开放平台，获取accessToken
+			String token = accessToken();
+			//将获取的accessToken存在缓存中
+			accessToken.setTokenStr(token);
+			//设置过期时间为7000秒，小于开放平台规定的7200秒
+			accessToken.setExpAt(System.currentTimeMillis()+7000l*1000);
+			return token;
+		}
+	}
+	
+	/**
+	 * 
+	 * accessToken:调用开放平台接口获取accessToken. <br/>
+	 *
+	 * @author bxy-jing
+	 * @return
+	 * @since JDK 1.6
+	 */
+	public static String accessToken() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("accessType", ACCESS_TYPE_CLIENT);
 		params.put("appID", appID);
@@ -93,61 +201,136 @@ public class PlatformUtil {
 		return null;
 	}
 
-	public void sendMsg(Message message) {
-		String url = MESSAGE_SEND_URL + "?access_token=" + accessToken() + "&device_type=2";
+	/**
+	 * 
+	 * sendMsg:发送普通消息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param message
+	 * @since JDK 1.6
+	 */
+	public static void sendMsg(Message message) {
+		String url = MESSAGE_SEND_URL + "?access_token=" + accessTokenWithCatch() + "&device_type=2";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("msg", JSON.toJSONString(message));
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void sendMsgs(Messages messages) {
-		String url = MESSAGE_SENDS_URL + "?access_token=" + accessToken() + "&device_type=2";
+	/**
+	 * 
+	 * sendMsgs:群发普通消息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param messages
+	 * @since JDK 1.6
+	 */
+	public static void sendMsgs(Messages messages) {
+		String url = MESSAGE_SENDS_URL + "?access_token=" + accessTokenWithCatch() + "&device_type=2";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("msg", JSON.toJSONString(messages));
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
 	}
+	/**
+	 * 
+	 * msgNotify:分享通知接口. <br/>
+	 * 暂不可用
+	 * @author bxy-jing
+	 * @param notification
+	 * @since JDK 1.6
+	 */
+	public static void msgNotify(Notification notification) {
+		String url = MESSAGE_NOTIFY_URL+"?access_token=" + accessTokenWithCatch();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("notification", JSON.toJSONString(notification));
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
 
-	public void resourceUpload(String type, String file) {
-		String url = RESOURCE_UPLOAD_URL + "?access_token=" + accessToken() + "&type=" + type;
+	/**
+	 * 
+	 * resourceUpload:新增临时素材. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param type 媒体文件类型(1缩略图、2图片、3语音、4视频)
+	 * @param file 媒体文件本地地址
+	 * @since JDK 1.6
+	 */
+	public static void resourceUpload(String type, String file) {
+		String url = RESOURCE_UPLOAD_URL + "?access_token=" + accessTokenWithCatch() + "&type=" + type;
 		Map<String, String> files = new HashMap<String, String>();
 		files.put("file", file);
 		Response response = HttpUtil.upload(url, files);
 		System.out.println(response.getBody());
 	}
 
-	public void resourceQuery(String type, int pageNum, int pageSize) {
+	/**
+	 * 
+	 * resourceQuery:获取临时素材. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param type 媒体文件类型(1图文、2图片、3语音、4视频)
+	 * @param pageNum 	页码
+	 * @param pageSize  每页大小
+	 * @since JDK 1.6
+	 */
+	public static void resourceQuery(String type, int pageNum, int pageSize) {
 		String url = RESOURCE_QUERY_URL;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("type", type);
 		params.put("pageNum", String.valueOf(pageNum));
 		params.put("pageSize", String.valueOf(pageSize));
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
-
-	public void userToken(String clientKey) {
+	
+	/**
+	 * 
+	 * userToken:获取user_token. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param clientKey
+	 * @since JDK 1.6
+	 */
+	public static void userToken(String clientKey) {
 		String url = USER_TOKEN_URL;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("clientKey", clientKey);
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void userInfo(String userToken) {
+	/**
+	 * 
+	 * userInfo:获取用户基本信息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @since JDK 1.6
+	 */
+	public static void userInfo(String userToken) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("user_token", userToken);
 		params.put("lang", DEFAULT_LANG);
 		Response response = HttpUtil.get(USER_INFO_URL, params);
 		System.out.println(response.getBody());
 	}
 
-	public void userUpdate(String userToken, UserInfo user) {
-		String url = USER_UPDATE_URL + "?access_token=" + accessToken() + "&user_token=" + userToken + "&lang="
+	/**
+	 * 
+	 * userUpdate:更新用户信息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @param user
+	 * @since JDK 1.6
+	 */
+	public static void userUpdate(String userToken, UserInfo user) {
+		String url = USER_UPDATE_URL + "?access_token=" + accessTokenWithCatch() + "&user_token=" + userToken + "&lang="
 				+ DEFAULT_LANG;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userInfo", JSON.toJSONString(user));
@@ -155,9 +338,17 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void userBuddysTimestamp(String userToken) {
+	/**
+	 * 
+	 * userBuddysTimestamp:获取好友列表分页时间戳. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @since JDK 1.6
+	 */
+	public static void userBuddysTimestamp(String userToken) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("user_token", userToken);
 		params.put("lang", DEFAULT_LANG);
 		String url = USER_BUDDYS_TIMESTAMP_URL;
@@ -165,9 +356,18 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void userBuddys(String userToken, int pageNum) {
+	/**
+	 * 
+	 * userBuddys:获取用户好友关注列表. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @param pageNum
+	 * @since JDK 1.6
+	 */
+	public static void userBuddys(String userToken, int pageNum) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("user_token", userToken);
 		params.put("lang", DEFAULT_LANG);
 		params.put("page_no", String.valueOf(pageNum));
@@ -176,9 +376,21 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void userOrganization(String userToken) {
+	/**
+	 * 
+	 * userOrganization:获取用户所在组织信息. <br/>
+	 * TODO(这里描述这个方法适用条件 – 可选).<br/>
+	 * TODO(这里描述这个方法的执行流程 – 可选).<br/>
+	 * TODO(这里描述这个方法的使用方法 – 可选).<br/>
+	 * TODO(这里描述这个方法的注意事项 – 可选).<br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @since JDK 1.6
+	 */
+	public static void userOrganization(String userToken) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("user_token", userToken);
 		params.put("lang", DEFAULT_LANG);
 		String url = USER_ORGANIZATION_URL;
@@ -186,9 +398,22 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void userShareOption(String userToken, int shareType) {
+	/**
+	 * 
+	 * userShareOption:获取用户分享隐私设置. <br/>
+	 * TODO(这里描述这个方法适用条件 – 可选).<br/>
+	 * TODO(这里描述这个方法的执行流程 – 可选).<br/>
+	 * TODO(这里描述这个方法的使用方法 – 可选).<br/>
+	 * TODO(这里描述这个方法的注意事项 – 可选).<br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @param shareType
+	 * @since JDK 1.6
+	 */
+	public static void userShareOption(String userToken, int shareType) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("user_token", userToken);
 		params.put("lang", DEFAULT_LANG);
 		params.put("shareType", String.valueOf(shareType));
@@ -197,9 +422,17 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void userShareNotificationSwitch(String userToken) {
+	/**
+	 * 
+	 * userShareNotificationSwitch:获取用户分享更新通知(暂不可用). <br/>
+	 *
+	 * @author bxy-jing
+	 * @param userToken
+	 * @since JDK 1.6
+	 */
+	public static void userShareNotificationSwitch(String userToken) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("user_token", userToken);
 		params.put("lang", DEFAULT_LANG);
 		String url = USER_SHARE_NOTIFICATION_SWITCH_URL;
@@ -207,44 +440,85 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void groupCreate(GroupInfo group) {
-		String url = GROUP_CREATE_URL + "?access_token=" + accessToken() + "&lang=" + DEFAULT_LANG;
+	/**
+	 * 
+	 * groupCreate:创建群. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param group
+	 * @since JDK 1.6
+	 */
+	public static void groupCreate(GroupInfo group) {
+		String url = GROUP_CREATE_URL + "?access_token=" + accessTokenWithCatch() + "&lang=" + DEFAULT_LANG;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupInfo", JSON.toJSONString(group));
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void groupRemove(String groupID) {
-		String url = GROUP_REMOVE_URL + "?access_token=" + accessToken() + "&lang=" + DEFAULT_LANG + "&groupID="
+	/**
+	 * 
+	 * groupRemove:解散群. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @since JDK 1.6
+	 */
+	public static void groupRemove(String groupID) {
+		String url = GROUP_REMOVE_URL + "?access_token=" + accessTokenWithCatch() + "&lang=" + DEFAULT_LANG + "&groupID="
 				+ groupID;
 		Map<String, String> params = new HashMap<String, String>();
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void groupInfo(String groupID) {
+	/**
+	 * 
+	 * groupInfo:获取群信息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @since JDK 1.6
+	 */
+	public static void groupInfo(String groupID) {
 		String url = GROUP_INFO_URL;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupID", groupID);
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("lang", DEFAULT_LANG);
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void groupList(String openID) {
+	/**
+	 * 
+	 * groupList:获取群列表. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param openID
+	 * @since JDK 1.6
+	 */
+	public static void groupList(String openID) {
 		String url = GROUP_LIST_URL;
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("openID", openID);
 		params.put("lang", DEFAULT_LANG);
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void groupRemoveMembers(String groupID, List<String> groupMembers) {
-		String url = GROUP_REMOVE_MEMBERS_URL + "?access_token=" + accessToken() + "&lang=" + DEFAULT_LANG + "&groupID="
+	/**
+	 * 
+	 * groupRemoveMembers:移除群成员. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @param groupMembers
+	 * @since JDK 1.6
+	 */
+	public static void groupRemoveMembers(String groupID, List<String> groupMembers) {
+		String url = GROUP_REMOVE_MEMBERS_URL + "?access_token=" + accessTokenWithCatch() + "&lang=" + DEFAULT_LANG + "&groupID="
 				+ groupID;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupMembers", JSON.toJSONString(groupMembers));
@@ -252,8 +526,17 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void groupAddMembers(String groupID, List<String> groupMembers) {
-		String url = GROUP_ADD_MEMBERS_URL + "?access_token=" + accessToken() + "&lang=" + DEFAULT_LANG + "&groupID="
+	/**
+	 * 
+	 * groupAddMembers:添加群成员. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @param groupMembers
+	 * @since JDK 1.6
+	 */
+	public static void groupAddMembers(String groupID, List<String> groupMembers) {
+		String url = GROUP_ADD_MEMBERS_URL + "?access_token=" + accessTokenWithCatch() + "&lang=" + DEFAULT_LANG + "&groupID="
 				+ groupID;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupMembers", JSON.toJSONString(groupMembers));
@@ -261,40 +544,74 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public void groupGetMember(String groupID, String groupMemberID) {
+	/**
+	 * 
+	 * groupGetMember:获取群成员信息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @param groupMemberID
+	 * @since JDK 1.6
+	 */
+	public static void groupGetMember(String groupID, String groupMemberID) {
 		String url = GROUP_GET_MEMBER_URL;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupID", groupID);
 		params.put("groupMemberID", groupMemberID);
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("lang", DEFAULT_LANG);
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void groupGetMembers(String groupID, int pageNo) {
+	/**
+	 * 
+	 * groupGetMembers:获取群成员列表信息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @param pageNo
+	 * @since JDK 1.6
+	 */
+	public static void groupGetMembers(String groupID, int pageNo) {
 		String url = GROUP_GET_MEMBERS_URL;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupID", groupID);
 		params.put("pageNo", String.valueOf(pageNo));
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("lang", DEFAULT_LANG);
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void groupGetMembersPageTimetamp(String groupID) {
+	/**
+	 * 
+	 * groupGetMembersPageTimetamp:获取群成员列表页码时间戳. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param groupID
+	 * @since JDK 1.6
+	 */
+	public static void groupGetMembersPageTimetamp(String groupID) {
 		String url = GROUP_GET_MEMBERS_PAGE_TIMESTAMP_URL;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("groupID", groupID);
-		params.put("access_token", accessToken());
+		params.put("access_token", accessTokenWithCatch());
 		params.put("lang", DEFAULT_LANG);
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
 
-	public void appUpdateAppInfo(List<Menu> menus) {
-		String url = APP_UPDATE_APP_INFO + "?access_token=" + accessToken() + "&accessType=" + ACCESS_TYPE_CLIENT;
+	/**
+	 * 
+	 * appUpdateAppInfo:设置自定义菜单. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param menus
+	 * @since JDK 1.6
+	 */
+	public static void appUpdateAppInfo(List<Menu> menus) {
+		String url = APP_UPDATE_APP_INFO + "?access_token=" + accessTokenWithCatch() + "&accessType=" + ACCESS_TYPE_CLIENT;
 		JSONObject appInfo = new JSONObject();
 		appInfo.put("appID", appID);
 		appInfo.put("entID", entID);
@@ -305,17 +622,12 @@ public class PlatformUtil {
 		params.put("appInfo", appInfo.toJSONString());
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
-	}
-	
-	public static void tokenTest(){
-		String token = "LvR5zAouzSQeERcUk5m1xskRfpHDJS-7Xb0ef6tnoBdeZuzbWcvSRFoI5-jhXr1YaV2SJ0kxfKdW8hZmcEveID6tkYZ2FyTV9K-yDlcFUGY";
-		
-	}
+	}	
+
 
 	public static void main(String[] args) {
-		String userToken = "4395733556"; // 4395732306 4395733301 4395733556
-		PlatformUtil platformUtil = new PlatformUtil();
-		// String accessToken = platformUtil.accessToken();
+		String userToken = "4395733556"; // 4395732306 4395733301 4395733556		
+		// String accessToken = platformUtil.accessTokenWithCatch();
 		// System.out.println(accessToken);
 		// platformUtil.userInfo("4395733301");
 
@@ -328,10 +640,10 @@ public class PlatformUtil {
 		// messages.setReceTargetID(targets);
 		// messages.setMessage("开放平台测试");
 		// messages.setMessageType("2");
-		// platformUtil.sendMsgs(messages);
-		// String type="2";
-		// String file="d:/48540923dd54564ec40a9c82b3de9c82d1584f19.jpg";
-		// platformUtil.resourceUpload(type, file);
+//		 platformUtil.sendMsgs(messages);
+//		 String type="2";
+//		 String file="d:/48540923dd54564ec40a9c82b3de9c82d1584f19.jpg";
+//		 PlatformUtil.resourceUpload(type, file);
 		// File f =new File(file);
 		// platformUtil.resourceQuery("2", 2, 100);
 
@@ -376,35 +688,43 @@ public class PlatformUtil {
 		// platformUtil.groupGetMember("4404020003", "4395732306");
 		// platformUtil.groupGetMembers("4404020003", 1);
 		// platformUtil.groupGetMembersPageTimetamp("4404020003");
+		
+//		Notification notification =  new Notification();
+//		notification.setFromUser("4395733556");
+//		
+//		notification.setTitle("分享测试标题");
+//		notification.setContent("分享测试内容");
+//		notification.setToUsers("4395733556");
+//		PlatformUtil.msgNotify(notification);
 
 		List<Menu> menus = new ArrayList<Menu>();
-		Menu menu1 = new Menu();
-		menu1.setName("呵呵哒");
-		menu1.setType("view");
-		menu1.setUrl("http://www.baidu.com");
+//		Menu menu1 = new Menu();
+//		menu1.setName("呵呵哒");
+//		menu1.setType("view");
+//		menu1.setUrl("http://www.baidu.com");
 		Menu menu2 = new Menu();
-		menu2.setName("赫赫");
-		menu2.setType("click");
-		menu2.setKey("CLICK_HEHE");
-		Menu menu3 = new Menu();
-		menu3.setName("菜单组");
-		List<Menu> ms = new ArrayList<Menu>();
-		Menu menu31 = new Menu();
-		menu31.setName("呵呵哒2");
-		menu31.setType("view");
-		menu31.setUrl("http://www.baidu.com");
-		ms.add(menu31);
-		Menu menu32 = new Menu();
-		menu32.setName("赫赫2");
-		menu32.setType("click");
-		menu32.setKey("CLICK_HEHE");
-		menu3.setSub_menus(ms);
-		menus.add(menu1);
-		menus.add(menu3);
+		menu2.setName("获取白名单设置");
+		menu2.setType("deviceInfo");
+		menu2.setKey("DEVICE_INFO");
+//		Menu menu3 = new Menu();
+//		menu3.setName("菜单组");
+//		List<Menu> ms = new ArrayList<Menu>();
+//		Menu menu31 = new Menu();
+//		menu31.setName("呵呵哒2");
+//		menu31.setType("view");
+//		menu31.setUrl("http://www.baidu.com");
+//		ms.add(menu31);
+//		Menu menu32 = new Menu();
+//		menu32.setName("赫赫2");
+//		menu32.setType("click");
+//		menu32.setKey("CLICK_HEHE");
+//		menu3.setSub_menus(ms);
+//		menus.add(menu1);
+//		menus.add(menu3);
 		menus.add(menu2);
-		ms.add(menu32);
+//		ms.add(menu32);
 
-		platformUtil.appUpdateAppInfo(menus);
+		PlatformUtil.appUpdateAppInfo(menus);
 
 	}
 }

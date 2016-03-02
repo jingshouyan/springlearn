@@ -22,7 +22,7 @@ public class Message {
 	private String sendUserID;
 	private String messageType;
 	private String receTargetID;
-	private String message;
+	private Object message;
 	public String getSendUserID() {
 		return sendUserID;
 	}
@@ -41,10 +41,10 @@ public class Message {
 	public void setReceTargetID(String receTargetID) {
 		this.receTargetID = receTargetID;
 	}
-	public String getMessage() {
+	public Object getMessage() {
 		return message;
 	}
-	public void setMessage(String message) {
+	public void setMessage(Object message) {
 		this.message = message;
 	}
 }
