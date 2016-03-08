@@ -41,14 +41,14 @@ public class PlatformUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlatformUtil.class);
 	
-	private static String appID = "4395730591";// 4395733556
-	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
-	private static String entID = "262";	
+	private static String appID = "4328612680";// 4395733556
+	private static String appSecret = "WT9snsWcc-M8Kt14d_uK3w";
+	private static String entID = "258";	
 	private static String token="randomString123";
 	
 	private static AccessToken accessToken = new AccessToken();
 	//开放平台根路径
-	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";// http://192.168.0.60:3801/platform/platform/
+	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
 																								// ,http://test.linkdood.cn:10080/platform/platform/
 	//获取access_token的url地址
 	public static final String ACCESS_TOKEN_URL = BASE_URL + "token";
@@ -724,7 +724,8 @@ public class PlatformUtil {
 		menus.add(menu2);
 //		ms.add(menu32);
 
-		PlatformUtil.appUpdateAppInfo(menus);
+//		PlatformUtil.appUpdateAppInfo(menus);
+		PlatformUtil.accessToken();
 
 	}
 }

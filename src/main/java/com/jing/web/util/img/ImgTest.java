@@ -9,10 +9,17 @@
 
 package com.jing.web.util.img;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 
 /**
  * ClassName:ImgTest <br/>
@@ -31,14 +38,20 @@ public class ImgTest {
 //		ImgCompress imgCompress = new ImgCompress(filePath, toPath);
 //		imgCompress.resizeByWidth(540);
 		
-		String dir="D:/images/";
-		String toDir="D:/VRV/images/";
+		String dir="C:/Users/bxy-jing/Desktop/tp1";
+		String toDir="C:/Users/bxy-jing/Desktop/tp1/1";
 		//		File dir = new File("D:/VRV/images/");
 //		List<File> files = getAllFile(dir);
 //		for(File file:files){
 //			System.out.println(file);
 //		}
 		ImgC( dir, toDir);
+//		List<String > l = new ArrayList<String>();
+//		l.add("123123");
+//		l.add("123123");
+//		l.add("123123");
+//		JSONArray ja = (JSONArray)JSON.toJSON(l);
+//		System.out.println(ja);
 	}
 	
 	public static void ImgC(String dir,String toDir) throws IOException{
@@ -52,7 +65,8 @@ public class ImgTest {
 				
 				System.out.println(toPath);
 				ImgCompress imgCompress = new ImgCompress(filePath, toPath);
-				imgCompress.resizeByWidth(1080);
+				imgCompress.resizeByWidth(720);
+//				png2Jpg(filePath,toPath);
 			}			
 		}
 	}
@@ -69,5 +83,35 @@ public class ImgTest {
 		}
 		return files;
 	}
+	
+	
+    public static void png2Jpg(String file,String toFile) {
+
+        BufferedImage bufferedImage;
+
+        try {
+
+          //read image file
+          bufferedImage = ImageIO.read(new File(file));
+
+          // create a blank, RGB, same width and height, and a white background
+          BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
+                bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+          newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
+          File f = new File(toFile);
+          File folder = f.getParentFile();
+          if(!folder.exists()) folder.mkdirs();
+          // write to jpeg file
+          ImageIO.write(newBufferedImage, "gif", f);
+
+          System.out.println("Done");
+
+        } catch (IOException e) {
+
+          e.printStackTrace();
+
+        }
+
+       }
 }
 
