@@ -79,8 +79,9 @@ public class HomeController {
 
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
 	@ResponseBody
-	public String upload(MultipartFile file) throws IOException {
+	public String upload(MultipartFile file,String data) throws IOException {
 		String originalFileName = "NAN";
+		System.out.println(data);
 		try {
 			if (!file.isEmpty()) {
 				originalFileName = file.getOriginalFilename();

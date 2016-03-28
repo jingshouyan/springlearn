@@ -36,7 +36,7 @@ public class MessageJob {
 
 	private ChatMessageHandler chatMessageHandler = new ChatMessageHandler();
 
-	@Scheduled(fixedDelay=5000)
+//	@Scheduled(fixedDelay=5000)
 	public void sendMessage(){
 		System.out.println("-----------------");
 		List<User> users = dbDaoUser.query(null);

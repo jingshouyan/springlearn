@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import com.jing.web.util.http.HttpUtil;
@@ -41,15 +42,39 @@ public class PlatformUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlatformUtil.class);
 	
-	private static String appID = "4328612680";// 4395733556
-	private static String appSecret = "WT9snsWcc-M8Kt14d_uK3w";
-	private static String entID = "258";	
-	private static String token="randomString123";
+//	private static String appID = "4328621727";// 4395733556   4328612680
+//	private static String appSecret = "ojKlsmsma2Wdg7G7L4NHkg";
+//	private static String entID = "258";	
+//	private static String token="randomString123";
+//	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
+	
+//	private static String appID = "4328612480";// 4395733556   4328612680
+//	private static String appSecret = "MPmrkhCBSKEb61hprqUyhw";
+//	private static String entID = "258";	
+//	private static String token="randomString123";
+	
+//	private static String appID = "4395730591";// 4395733556   4328612680
+//	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
+//	private static String entID = "262";	
+//	private static String token="randomString123";
+//	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
 	
 	private static AccessToken accessToken = new AccessToken();
 	//开放平台根路径
-	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
-																								// ,http://test.linkdood.cn:10080/platform/platform/
+	
+	
+	private static String appID = "9151315548882010112";// 4395733556   4328612680
+	private static String appSecret = "kW3OBK_vl4_vprssrbiXzjVGbCf3xIyD78j7RQln2U_OhF1bNadY-l0oLDcaA4C0";
+	private static String entID = "545460912128";	
+	private static String token="randomString123";
+	public static final String BASE_URL = "http://im.linkdood.cn/platform/platform/";
+	
+	
+//	private static String appID = "9151316648393637888";// 4395733556   4328612680
+//	private static String appSecret = "d4I75I7pPFlqTWoNA59rRGNcfWwJ214sfG_aXnKscoLQzvQ6V5ZmEvpPchGcDha_";
+//	private static String entID = "545460977664";	
+//	private static String token="randomString123";
+//	public static final String BASE_URL = "http://im.linkdood.com/platform/platform/";
 	//获取access_token的url地址
 	public static final String ACCESS_TOKEN_URL = BASE_URL + "token";
 	//发送普通消息的url地址
@@ -99,9 +124,11 @@ public class PlatformUtil {
 	//获取群成员列表页码时间戳的url地址
 	public static final String GROUP_GET_MEMBERS_PAGE_TIMESTAMP_URL = BASE_URL + "group/getMembersPageTimestamp";
 	//设置自定义菜单的url地址
-	public static final String APP_UPDATE_APP_INFO = BASE_URL + "app/updateAppInfo";
-	
-	
+	public static final String APP_UPDATE_APP_INFO_URL = BASE_URL + "app/updateAppInfo";
+	//设置机器人子账户的url地址
+	public static final String APP_SET_SUBACCOUNT_URL = BASE_URL+"app/setAppSubAccount";
+	//移除机器人子账户的url地址
+	public static final String APP_REMOVE_SUBACCOUNT_URL=BASE_URL+"app/removeAppSubAccount";
 
 	public static final String ACCESS_TYPE_CLIENT = "CLIENT";
 	public static final String DEFAULT_LANG = "zh_CN";
@@ -376,6 +403,17 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
+	
+	public static void userAllBuddys(String userToken){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("access_token", accessTokenWithCatch());
+		params.put("user_token", userToken);
+		params.put("lang", DEFAULT_LANG);
+		String url = USER_ALL_BUDDYS_URL;
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
+	
 	/**
 	 * 
 	 * userOrganization:获取用户所在组织信息. <br/>
@@ -450,8 +488,9 @@ public class PlatformUtil {
 	 */
 	public static void groupCreate(GroupInfo group) {
 		String url = GROUP_CREATE_URL + "?access_token=" + accessTokenWithCatch() + "&lang=" + DEFAULT_LANG;
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<String, String>();		
 		params.put("groupInfo", JSON.toJSONString(group));
+		System.out.println(JSON.toJSONString(group));
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
 	}
@@ -611,7 +650,7 @@ public class PlatformUtil {
 	 * @since JDK 1.6
 	 */
 	public static void appUpdateAppInfo(List<Menu> menus) {
-		String url = APP_UPDATE_APP_INFO + "?access_token=" + accessTokenWithCatch() + "&accessType=" + ACCESS_TYPE_CLIENT;
+		String url = APP_UPDATE_APP_INFO_URL + "?access_token=" + accessTokenWithCatch() + "&accessType=" + ACCESS_TYPE_CLIENT;
 		JSONObject appInfo = new JSONObject();
 		appInfo.put("appID", appID);
 		appInfo.put("entID", entID);
@@ -624,28 +663,104 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}	
 
+//	public static void setSubAccount(List<SubAccount> sas){
+//		String url = APP_SET_SUBACCOUNT_URL+"?access_token=" + accessTokenWithCatch();
+//		Map<String, String> params = new HashMap<String, String>();
+//		String json = JSON.toJSONString(sas);
+//		params.put("subAccount", json);
+//		System.out.println(json);
+//		Response response = HttpUtil.post(url, params);
+//		System.out.println(response.getBody());
+//	}
+	
+	public static void setSubAccount(JSONArray sas){
+		String url = APP_SET_SUBACCOUNT_URL+"?access_token=" + accessTokenWithCatch();
+		Map<String, String> params = new HashMap<String, String>();
+		String json = sas.toJSONString();
+		params.put("subAccount", json);
+		System.out.println(json);
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public static void removeSubAccount(){
+		String url = APP_REMOVE_SUBACCOUNT_URL;
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("access_token", accessTokenWithCatch());
+		Response response = HttpUtil.get(url, params);
+		System.out.println(response.getBody());
+	}
 
+	public static void sendImgMsg(String userId){
+		Message message = new Message();
+		message.setSendUserID(PlatformUtil.appID);
+		message.setReceTargetID(userId);
+		message.setMessageType("5");
+		JSONObject img = new JSONObject();
+		img.put("thumbUrl", "hd3/0/appimage/20160323/1520/head_SNa4_7b900000017cb1d5.jpg");
+		img.put("mediaUrl", "hd3/0/appimage/20160323/1520/head_SNa4_7b900000017cb1d5.jpg");
+		img.put("fileName", "head_SNa4_7b900000017cb1d5.jpg");
+		img.put("docid", "0");
+//		img.put("enc_dec_key", "123");
+		message.setMessage(img);
+		PlatformUtil.sendMsg(message);
+	}
+	
 	public static void main(String[] args) {
-		String userToken = "4395733556"; // 4395732306 4395733301 4395733556		
-		// String accessToken = platformUtil.accessTokenWithCatch();
-		// System.out.println(accessToken);
-		// platformUtil.userInfo("4395733301");
-
-		// Messages messages = new Messages();
-		// messages.setSendUserID(platformUtil.appID);
-		// List<String> targets = new ArrayList<String>();
-		// targets.add(userToken);
-		// targets.add(userToken);
-		// targets.add(userToken);
-		// messages.setReceTargetID(targets);
-		// messages.setMessage("开放平台测试");
-		// messages.setMessageType("2");
-//		 platformUtil.sendMsgs(messages);
-//		 String type="2";
-//		 String file="d:/48540923dd54564ec40a9c82b3de9c82d1584f19.jpg";
+//		removeSubAccount();
+//		System.out.println(Long.toString(4328621782l));
+//		List<SubAccount> sas = new ArrayList<SubAccount>();
+//		SubAccount sa = new SubAccount();
+//		sa.setDID(appID+"001");
+//		sa.setDName("神灯");
+//		sa.setDPic("http://vrv.linkdood.cn/hd5/0/appimage/20160310/1525/head_hcw5_2c11000038362a01.png");
+//		sa.setDDesc("阿拉丁的神灯");
+//		sas.add(sa);
+//		setSubAccount(sas);
+		
+		JSONArray ja = new JSONArray();
+		JSONObject jo = new JSONObject();
+		jo.put("DID", appID+"001");
+		jo.put("DName", "神灯25");
+		jo.put("DPic", "http://vrv.linkdood.cn/hd5/0/appimage/20160310/1525/head_hcw5_2c11000038362a01.png");
+		jo.put("DDesc", "阿拉hsd");
+		JSONObject jo2 = new JSONObject();
+		jo2.put("DID", appID+"002");
+		jo2.put("DName", "钢铁侠");
+		jo2.put("DPic", "http://vrv.linkdood.cn/hd5/0/appimage/20160310/1525/head_hcw5_2c11000038362a01.png");
+		jo2.put("DDesc", "赫赫");
+		ja.add(jo);
+//		ja.add(jo2);
+//		setSubAccount(ja);
+//		userInfo("9151315548882010115");
+//		removeSubAccount();
+		//4328621782 朱建宇   4328625706 靖守彦
+		String userToken = "9151316648393638091"; // 4395732306 4395733301 4395733556		
+		sendImgMsg("9151315548882010969");
+//		// String accessToken = platformUtil.accessTokenWithCatch();
+//		// System.out.println(accessToken);
+//		// platformUtil.userInfo("4395733301");
+//
+		 Messages messages = new Messages();
+		 messages.setSendUserID(PlatformUtil.appID);
+		 List<String> targets = new ArrayList<String>();
+		 targets.add(userToken);
+		 targets.add(userToken);
+		 targets.add(userToken);
+		 targets.add(userToken);
+		 targets.add(userToken);
+		 targets.add(userToken);
+		 targets.add(userToken);
+		 messages.setReceTargetID(targets);
+		 messages.setMessage("开放平台测试");
+		 messages.setMessageType("2");
+//		 PlatformUtil.sendMsgs(messages);
+		 
+		 String type="2";
+		 String file="d:/48540923dd54564ec40a9c82b3de9c82d1584f19.jpg";
 //		 PlatformUtil.resourceUpload(type, file);
-		// File f =new File(file);
-		// platformUtil.resourceQuery("2", 2, 100);
+//		 File f =new File(file);
+//		 PlatformUtil.resourceQuery("2",1, 100);
 
 		// platformUtil.userToken("123123");
 
@@ -661,19 +776,24 @@ public class PlatformUtil {
 		// platformUtil.userShareOption(userToken, 3);
 		// platformUtil.userShareNotificationSwitch(userToken);
 
-		// GroupInfo groupInfo = new GroupInfo();
-		// groupInfo.setGroupName("开放平台测试组");
-		// groupInfo.setGroupIcon("");
-		// groupInfo.setGroupType("测试群");
-		// groupInfo.setGroupLevel(GROUP_LEVEL_TEMPORARY);
-		// groupInfo.setGroupBrief("这只是一个开放平台的接口测试");
-		// groupInfo.setGroupBulletin("群公告呀");
-		// groupInfo.setRelatedEnterpriseID(Long.parseLong(platformUtil.appID));
-		// List<Long> initGroupMembers=new ArrayList<Long>();
-		// initGroupMembers.add(4395733301l);
-		// initGroupMembers.add(4395732306l);
-		// groupInfo.setInitGroupMembers(initGroupMembers);
-		// platformUtil.groupCreate(groupInfo);//4404020003
+//		 GroupInfo groupInfo = new GroupInfo();
+//		 groupInfo.setGroupName("开放平台测试组2");
+//		 groupInfo.setGroupIcon("");
+//		 groupInfo.setGroupType("测试群");
+//		 groupInfo.setGroupLevel(1);
+//		 groupInfo.setGroupBrief("这只是一个开放平台的接口测试");
+//		 groupInfo.setGroupBulletin("群公告呀");
+//		 groupInfo.setRelatedEnterpriseID(Long.parseLong(entID));
+//		 List<Long> initGroupMembers=new ArrayList<Long>();
+//		 initGroupMembers.add(4328621782l);
+//		 initGroupMembers.add(4328625706l);
+//		 initGroupMembers.add(Long.parseLong(appID));
+//		 groupInfo.setInitGroupMembers(initGroupMembers);
+//		 PlatformUtil.groupCreate(groupInfo);//4404020003  4336919145
+//		 
+//		 List<String> members = new ArrayList<String>();
+//		 members.add(appID);
+//		 PlatformUtil.groupAddMembers("4336919145",members );
 
 		// platformUtil.groupRemove("4404020002");
 
@@ -703,7 +823,7 @@ public class PlatformUtil {
 //		menu1.setType("view");
 //		menu1.setUrl("http://www.baidu.com");
 		Menu menu2 = new Menu();
-		menu2.setName("获取白名单设置");
+		menu2.setName("帮助");
 		menu2.setType("deviceInfo");
 		menu2.setKey("DEVICE_INFO");
 //		Menu menu3 = new Menu();
@@ -725,7 +845,9 @@ public class PlatformUtil {
 //		ms.add(menu32);
 
 //		PlatformUtil.appUpdateAppInfo(menus);
-		PlatformUtil.accessToken();
+//		PlatformUtil.accessToken();
+		
+		PlatformUtil.userAllBuddys(PlatformUtil.appID);
 
 	}
 }

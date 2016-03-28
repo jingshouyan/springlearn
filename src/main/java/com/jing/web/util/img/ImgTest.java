@@ -38,8 +38,8 @@ public class ImgTest {
 //		ImgCompress imgCompress = new ImgCompress(filePath, toPath);
 //		imgCompress.resizeByWidth(540);
 		
-		String dir="C:/Users/bxy-jing/Desktop/tp1";
-		String toDir="C:/Users/bxy-jing/Desktop/tp1/1";
+		String dir="D:\\123";
+		String toDir="D:\\22222";
 		//		File dir = new File("D:/VRV/images/");
 //		List<File> files = getAllFile(dir);
 //		for(File file:files){
@@ -65,7 +65,7 @@ public class ImgTest {
 				
 				System.out.println(toPath);
 				ImgCompress imgCompress = new ImgCompress(filePath, toPath);
-				imgCompress.resizeByWidth(720);
+				imgCompress.resizeByWidth(1080);
 //				png2Jpg(filePath,toPath);
 			}			
 		}

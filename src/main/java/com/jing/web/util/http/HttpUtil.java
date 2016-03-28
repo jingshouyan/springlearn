@@ -388,7 +388,7 @@ public class HttpUtil {
 					builder.addPart(entry.getKey(), new FileBody(new File(entry.getValue())));
 				}
 			}
-			if(null!=params&&params.isEmpty()){
+			if(null!=params&&!params.isEmpty()){
 				for(Entry<String,String> entry:params.entrySet()){					
 					builder.addTextBody(entry.getKey(), entry.getValue(), ContentType.TEXT_PLAIN);
 				}
@@ -409,6 +409,7 @@ public class HttpUtil {
 				JSON.toJSONString(response));
 		return response;
 	}
+	
 
 	private static List<NameValuePair> map2NameValuePairs(Map<String, String> map) {
 		List<NameValuePair> formParams = new ArrayList<NameValuePair>();
