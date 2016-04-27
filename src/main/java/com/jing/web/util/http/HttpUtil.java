@@ -244,6 +244,7 @@ public class HttpUtil {
 		long endTime = System.currentTimeMillis();
 		logger.debug("post-response|url>>>{}|used>>>{}ms|response>>>{}", url, endTime - startTime,
 				JSON.toJSONString(response));
+		
 		return response;
 	}
 
@@ -576,28 +577,70 @@ public class HttpUtil {
 		}
 		return client;
 	}
+	
+	
+	public static void getUserid(){
+		String url = "http://test.linkdood.cn:10080/server-imrobot/email/getUserId.do";
+		println(url);
+		// String url = "https://www.baidu.com";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("clientKey", "f6NwKeujubgR5GOQvCp2R5OhOi06lMCXSPFSkFaMPgRGOB6JEmudkY1MH8k0b21U");
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("ticket", "83a674c1f3af45eaa84c5c5c3c4c0fd5");
+		JSONObject object  = new JSONObject();
+		object.put("username", "944373279@qq.com");
+		object.put("userid", 4395731455l);
+		object.put("password", "asbkhxloiwwhbebc");
+		object.put("pop3Host", "pop.qq.com");
+		object.put("pop3Port", 995);
+		object.put("userid", 4395731455l);
+		Response response = get(url, params);
+		println(response);
+	}
 
-	public static void main(String[] args) {
-
-		String url = "http://218.241.161.56:3801/server-redpack/RedPackController/send.do";
+	public static void save(){
+		String url = "http://vrv.linkdood.cn/server-imrobot/email/saveEmailInfo.do";
 		println(url);
 		// String url = "https://www.baidu.com";
 		Map<String, String> params = new HashMap<String, String>();
 		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Client-Key", "abc");
-		params.put("type", "2");
-		params.put("keyword", "哈哈");
-		params.put("message", "哈哈222");
-		params.put("totalMoney", "1000");
-		params.put("totalCount", "12");
-		params.put("securityPassword", "123456");
-		Response response = post(url, params, headers, DEFAULT_CHARSET);
+		headers.put("ticket", "1544cc868091f0117c5e96e49559941fd7e6e6476a1");
+		JSONObject object  = new JSONObject();
+		object.put("username", "944373279@qq.com");
+		object.put("userid", 4395731455l);
+		object.put("password", "asbkhxloiwwhbebc");
+		object.put("pop3Host", "pop.qq.com");
+		object.put("pop3Port", 995);
+		object.put("userid", 4395731455l);
+		Response response = postJson(url, object, headers);
 		println(response);
+	}
+
+	
+	public static void del(){
+		String url = "http://test.linkdood.cn:10080/server-imrobot/email/delEmailInfo.do";
+		println(url);
+		// String url = "https://www.baidu.com";
+		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("ticket", "1544cc868091f0117c5e96e49559941fd7e6e6476a1");
+		JSONObject object  = new JSONObject();
+		object.put("username", "944373279@qq.com");
+		object.put("userid", 4395731455l);
+		Response response = postJson(url, object, headers);
+		println(response);
+	}
+	public static void main(String[] args) {
+		getUserid();
+//		save();
+//		del();
 	}
 
 	public static void println(Object o) {
 		String str = JSONObject.toJSONString(o);
 		System.out.println(str);
 	}
+	
+	
 
 }

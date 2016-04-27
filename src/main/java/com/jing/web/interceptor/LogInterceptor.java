@@ -1,5 +1,7 @@
 package com.jing.web.interceptor;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +17,13 @@ public class LogInterceptor extends HandlerInterceptorAdapter{
 	@Override
 	public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler) throws Exception{
 		logger.info("preHandle"+handler.toString());
+		Enumeration<String> headers = request.getHeaderNames();
+		while(headers.hasMoreElements()){
+			String headerName = headers.nextElement();
+			String headerValue = request.getHeader(headerName);
+			logger.info(headerName+":"+headerValue);
+		}
+		logger.info(request.getHeaderNames().toString());
 		return super.preHandle(request, response, handler);
 	}
 }

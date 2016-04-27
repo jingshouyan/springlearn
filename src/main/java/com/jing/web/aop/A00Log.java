@@ -10,10 +10,10 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 //import org.aspectj.lang.reflect.MethodSignature;
 
-//@Aspect
-//@Component
+@Aspect
+@Component
 public class A00Log {
-	@Pointcut("execution(* com.jing.web.dao..*(..))")
+	@Pointcut("execution(* com.jing.web.controller..*(..))")
     private void pointcut(){} 
 	
 //	@Before("pointcut()")

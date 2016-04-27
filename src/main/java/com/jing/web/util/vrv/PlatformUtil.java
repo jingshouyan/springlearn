@@ -47,27 +47,44 @@ public class PlatformUtil {
 //	private static String entID = "258";	
 //	private static String token="randomString123";
 //	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
+//	public static long userid = 4378954982l;
 	
 //	private static String appID = "4328612480";// 4395733556   4328612680
 //	private static String appSecret = "MPmrkhCBSKEb61hprqUyhw";
 //	private static String entID = "258";	
 //	private static String token="randomString123";
 	
+	private static String appID = "4395730591";// 4395733556   4328612680
+	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
+	private static String entID = "262";	
+	private static String token="randomString123";
+	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
+	public static long userid = 4395736151l;
+	
+//	private static String appID = "4378953375";// 4395733556   4328612680
+//	private static String appSecret = "P6OCY3dxazvswNcO1i6zxw";
+//	private static String entID = "261";	
+//	private static String token="randomString123";
+//	public static final String BASE_URL = "http://vrvnanjing.linkdood.cn/platform/platform/";
+//	public static long userid = 4378955001l;
+	
+	
 //	private static String appID = "4395730591";// 4395733556   4328612680
 //	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
 //	private static String entID = "262";	
 //	private static String token="randomString123";
-//	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
+//	public static final String BASE_URL = "http://192.168.0.59:3801/platform/platform/";
+//	public static long userid = 4395736151l;
 	
 	private static AccessToken accessToken = new AccessToken();
 	//开放平台根路径
 	
 	
-	private static String appID = "9151315548882010112";// 4395733556   4328612680
-	private static String appSecret = "kW3OBK_vl4_vprssrbiXzjVGbCf3xIyD78j7RQln2U_OhF1bNadY-l0oLDcaA4C0";
-	private static String entID = "545460912128";	
-	private static String token="randomString123";
-	public static final String BASE_URL = "http://im.linkdood.cn/platform/platform/";
+//	private static String appID = "9151315548882010112";// 4395733556   4328612680
+//	private static String appSecret = "kW3OBK_vl4_vprssrbiXzjVGbCf3xIyD78j7RQln2U_OhF1bNadY-l0oLDcaA4C0";
+//	private static String entID = "545460912128";	
+//	private static String token="randomString123";
+//	public static final String BASE_URL = "http://im.linkdood.cn/platform/platform/";
 	
 	
 //	private static String appID = "9151316648393637888";// 4395733556   4328612680
@@ -81,6 +98,8 @@ public class PlatformUtil {
 	public static final String MESSAGE_SEND_URL = BASE_URL + "message/send";
 	//群发普通消息的url地址
 	public static final String MESSAGE_SENDS_URL = BASE_URL + "message/sends";
+	//发送模板消息的url地址
+	public static final String MESSAGE_TEMPLATE_SEND_URL = BASE_URL + "message/sendMessageTemplate";
 	//分享通知接口的url地址
 	public static final String MESSAGE_NOTIFY_URL= BASE_URL+"message/notify";
 	//新增临时素材的url地址
@@ -113,6 +132,8 @@ public class PlatformUtil {
 	public static final String GROUP_INFO_URL = BASE_URL + "group/info";
 	//获取群列表的url地址
 	public static final String GROUP_LIST_URL = BASE_URL + "group/list";
+	//转让群的url地址
+	public static final String GROUP_TRANSFER_URL=BASE_URL + "group/groupTransfer";
 	//移除群成员的url地址
 	public static final String GROUP_REMOVE_MEMBERS_URL = BASE_URL + "group/removeMembers";
 	//添加群成员的url地址
@@ -256,6 +277,17 @@ public class PlatformUtil {
 		String url = MESSAGE_SENDS_URL + "?access_token=" + accessTokenWithCatch() + "&device_type=2";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("msg", JSON.toJSONString(messages));
+		System.out.println(JSON.toJSONString(messages));
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
+	
+	public static void sendTMsg(TemplateMessage tm){
+		String url = MESSAGE_TEMPLATE_SEND_URL + "?access_token=" + accessTokenWithCatch() + "&device_type=2";
+		Map<String, String> params = new HashMap<String, String>();
+		String message = JSON.toJSONString(tm);
+		params.put("message", message);
+		System.out.println(message);
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
 	}
@@ -690,6 +722,16 @@ public class PlatformUtil {
 		Response response = HttpUtil.get(url, params);
 		System.out.println(response.getBody());
 	}
+	
+	public static void groupTransfer(JSONObject groupInfo){
+		String url = GROUP_TRANSFER_URL+"?access_token=" + accessTokenWithCatch();
+		Map<String, String> params = new HashMap<String, String>();
+		String json = groupInfo.toJSONString();
+		params.put("groupInfo", json);
+		System.out.println(json);
+		Response response = HttpUtil.post(url, params);
+		System.out.println(response.getBody());
+	}
 
 	public static void sendImgMsg(String userId){
 		Message message = new Message();
@@ -718,6 +760,20 @@ public class PlatformUtil {
 //		sas.add(sa);
 //		setSubAccount(sas);
 		
+//		userToken("VmXlB98qwvD8UycoEfj7-ESC0Hd2gZJTuy78GFazuwVGOB6JEmudkY1MH8k0b21U");
+//		userInfo("4395736213");
+		TemplateMessage tm = new TemplateMessage();
+		tm.setSendUserID(userid+3+"");
+		tm.setTitle("这是个标题");
+		tm.setTitleColor("#000079");
+		tm.setTitleBgColor("#AE0000");
+		tm.setType("1");
+		tm.setCreator("靖守彦");
+		tm.setContent("赫赫这是内容\n这是第二行\n这是第3行\n这是第4行\n这是第5行\n这是第6行\n这是第7行\n这是第8行\n这是第9行\n");
+		tm.setDetailUrl("http://www.baidu.com");
+		String toUsers = userid+",4395736409,4395739202,4395736406";
+		tm.setToUsers(toUsers);
+		sendTMsg(tm );		
 		JSONArray ja = new JSONArray();
 		JSONObject jo = new JSONObject();
 		jo.put("DID", appID+"001");
@@ -735,30 +791,26 @@ public class PlatformUtil {
 //		userInfo("9151315548882010115");
 //		removeSubAccount();
 		//4328621782 朱建宇   4328625706 靖守彦
-		String userToken = "9151316648393638091"; // 4395732306 4395733301 4395733556		
-		sendImgMsg("9151315548882010969");
+		String userToken = "4328625706"; // 4395732306 4395733301 4395733556		
+//		sendImgMsg("9151315548882010969");
 //		// String accessToken = platformUtil.accessTokenWithCatch();
 //		// System.out.println(accessToken);
 //		// platformUtil.userInfo("4395733301");
 //
 		 Messages messages = new Messages();
-		 messages.setSendUserID(PlatformUtil.appID);
+		 messages.setSendUserID(userid+3+"");
 		 List<String> targets = new ArrayList<String>();
-		 targets.add(userToken);
-		 targets.add(userToken);
-		 targets.add(userToken);
-		 targets.add(userToken);
-		 targets.add(userToken);
-		 targets.add(userToken);
-		 targets.add(userToken);
+		 targets.add(userid+"");
+		 targets.add(userid+"");
+		 targets.add(userid+"");
 		 messages.setReceTargetID(targets);
 		 messages.setMessage("开放平台测试");
 		 messages.setMessageType("2");
 //		 PlatformUtil.sendMsgs(messages);
 		 
 		 String type="2";
-		 String file="d:/48540923dd54564ec40a9c82b3de9c82d1584f19.jpg";
-//		 PlatformUtil.resourceUpload(type, file);
+		 String file="d:/Chrysanthemum.jpg";
+		 PlatformUtil.resourceUpload(type, file);
 //		 File f =new File(file);
 //		 PlatformUtil.resourceQuery("2",1, 100);
 
@@ -785,11 +837,15 @@ public class PlatformUtil {
 //		 groupInfo.setGroupBulletin("群公告呀");
 //		 groupInfo.setRelatedEnterpriseID(Long.parseLong(entID));
 //		 List<Long> initGroupMembers=new ArrayList<Long>();
-//		 initGroupMembers.add(4328621782l);
-//		 initGroupMembers.add(4328625706l);
+//		 initGroupMembers.add(userid);
 //		 initGroupMembers.add(Long.parseLong(appID));
 //		 groupInfo.setInitGroupMembers(initGroupMembers);
-//		 PlatformUtil.groupCreate(groupInfo);//4404020003  4336919145
+////		 PlatformUtil.groupCreate(groupInfo);//4404021602
+//		 
+//		 JSONObject json = new JSONObject();
+//		 json.put("groupId", "4404021602");
+//		 json.put("toUser", userid);
+//		 groupTransfer(json);
 //		 
 //		 List<String> members = new ArrayList<String>();
 //		 members.add(appID);
@@ -847,7 +903,7 @@ public class PlatformUtil {
 //		PlatformUtil.appUpdateAppInfo(menus);
 //		PlatformUtil.accessToken();
 		
-		PlatformUtil.userAllBuddys(PlatformUtil.appID);
+//		PlatformUtil.userAllBuddys(PlatformUtil.appID);
 
 	}
 }

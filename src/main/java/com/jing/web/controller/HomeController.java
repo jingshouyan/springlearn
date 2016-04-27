@@ -12,11 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.jing.web.bean.Err;
 import com.jing.web.dao.DbDao;
 import com.jing.web.model.User;
 import com.jing.web.util.Constants;
@@ -103,11 +108,38 @@ public class HomeController {
 		}
 		return originalFileName;
 	}
+	@RequestMapping(value = "test", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject test(@RequestBody String body){
+		
+		return JSON.parseObject(body);
+	}
+	
+	@RequestMapping(value = "test2", method = RequestMethod.POST)
+	@ResponseBody
+	public String test2(@RequestBody JSONObject body){
+		
+		return body.toJSONString();
+	}
+	
+	@RequestMapping(value = "test3", method = RequestMethod.POST)
+	@ResponseBody
+	public User test3(@RequestBody User body){
+		
+		return body;
+	}
 	
 	@RequestMapping(value = "cache")
 	@ResponseBody
 	public String cache(){
 		 
 		return "cache";
+	}
+	
+	@ExceptionHandler
+	@ResponseBody
+	public Err error(Exception e){
+		logger.error("",e);
+		return new Err(e);
 	}
 }
