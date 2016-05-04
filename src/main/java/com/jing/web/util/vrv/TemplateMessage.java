@@ -8,6 +8,10 @@
 */
 
 package com.jing.web.util.vrv;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * ClassName:TemplateMessage <br/>
  * Function: TODO ADD FUNCTION. <br/>
@@ -28,6 +32,9 @@ public class TemplateMessage {
 	private String content;
 	private String detailUrl;
 	private String toUsers;
+	private List<Map<String,String>> fields;
+	private String status;
+	private String statusColor;
 	
 	public String getTitle() {
 		return title;
@@ -82,6 +89,24 @@ public class TemplateMessage {
 	}
 	public void setSendUserID(String sendUserID) {
 		this.sendUserID = sendUserID;
+	}
+	public List<Map<String, String>> getFields() {
+		return fields;
+	}
+	public void setFields(List<Map<String, String>> fields) {
+		this.fields = fields;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getStatusColor() {
+		return statusColor;
+	}
+	public void setStatusColor(String statusColor) {
+		this.statusColor = statusColor;
 	}
 }
 

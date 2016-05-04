@@ -47,26 +47,22 @@ public class PlatformUtil {
 //	private static String entID = "258";	
 //	private static String token="randomString123";
 //	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
-//	public static long userid = 4378954982l;
+//	public static long userid = 4328625706l;
 	
-//	private static String appID = "4328612480";// 4395733556   4328612680
-//	private static String appSecret = "MPmrkhCBSKEb61hprqUyhw";
-//	private static String entID = "258";	
+	
+//	private static String appID = "4395730591";// 4395733556   4328612680
+//	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
+//	private static String entID = "262";	
 //	private static String token="randomString123";
+//	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
+//	public static long userid = 4395736151l;
 	
-	private static String appID = "4395730591";// 4395733556   4328612680
-	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
-	private static String entID = "262";	
+	private static String appID = "4378953375";// 4395733556   4328612680
+	private static String appSecret = "P6OCY3dxazvswNcO1i6zxw";
+	private static String entID = "261";	
 	private static String token="randomString123";
-	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
-	public static long userid = 4395736151l;
-	
-//	private static String appID = "4378953375";// 4395733556   4328612680
-//	private static String appSecret = "P6OCY3dxazvswNcO1i6zxw";
-//	private static String entID = "261";	
-//	private static String token="randomString123";
-//	public static final String BASE_URL = "http://vrvnanjing.linkdood.cn/platform/platform/";
-//	public static long userid = 4378955001l;
+	public static final String BASE_URL = "http://vrvnanjing.linkdood.cn/platform/platform/";
+	public static long userid = 4378955030l;//4378955030 4378954982
 	
 	
 //	private static String appID = "4395730591";// 4395733556   4328612680
@@ -85,13 +81,14 @@ public class PlatformUtil {
 //	private static String entID = "545460912128";	
 //	private static String token="randomString123";
 //	public static final String BASE_URL = "http://im.linkdood.cn/platform/platform/";
-	
+//	public static long userid = 9151315548882011004l;
 	
 //	private static String appID = "9151316648393637888";// 4395733556   4328612680
 //	private static String appSecret = "d4I75I7pPFlqTWoNA59rRGNcfWwJ214sfG_aXnKscoLQzvQ6V5ZmEvpPchGcDha_";
 //	private static String entID = "545460977664";	
 //	private static String token="randomString123";
 //	public static final String BASE_URL = "http://im.linkdood.com/platform/platform/";
+//	public static long userid = 9151315548882011004l;
 	//获取access_token的url地址
 	public static final String ACCESS_TOKEN_URL = BASE_URL + "token";
 	//发送普通消息的url地址
@@ -260,9 +257,32 @@ public class PlatformUtil {
 	public static void sendMsg(Message message) {
 		String url = MESSAGE_SEND_URL + "?access_token=" + accessTokenWithCatch() + "&device_type=2";
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("msg", JSON.toJSONString(message));
+		String msg = JSON.toJSONString(message);
+		params.put("msg", msg);
+		System.out.println(msg);
 		Response response = HttpUtil.post(url, params);
 		System.out.println(response.getBody());
+	}
+	
+	
+	public static void sendImageMsg(Message message,Image image){
+		message.setMessageType("5");
+		message.setMessage(image);
+		sendMsg(message);
+	}
+	/**
+	 * 
+	 * sendArticleMsg:发送图文消息. <br/>
+	 *
+	 * @author bxy-jing
+	 * @param message
+	 * @param articles
+	 * @since JDK 1.6
+	 */
+	public static void sendArticleMsg(Message message,List<Article> articles){
+		message.setMessageType("12");
+		message.setMessage(articles);
+		sendMsg(message);
 	}
 
 	/**
@@ -733,20 +753,6 @@ public class PlatformUtil {
 		System.out.println(response.getBody());
 	}
 
-	public static void sendImgMsg(String userId){
-		Message message = new Message();
-		message.setSendUserID(PlatformUtil.appID);
-		message.setReceTargetID(userId);
-		message.setMessageType("5");
-		JSONObject img = new JSONObject();
-		img.put("thumbUrl", "hd3/0/appimage/20160323/1520/head_SNa4_7b900000017cb1d5.jpg");
-		img.put("mediaUrl", "hd3/0/appimage/20160323/1520/head_SNa4_7b900000017cb1d5.jpg");
-		img.put("fileName", "head_SNa4_7b900000017cb1d5.jpg");
-		img.put("docid", "0");
-//		img.put("enc_dec_key", "123");
-		message.setMessage(img);
-		PlatformUtil.sendMsg(message);
-	}
 	
 	public static void main(String[] args) {
 //		removeSubAccount();
@@ -771,7 +777,32 @@ public class PlatformUtil {
 		tm.setCreator("靖守彦");
 		tm.setContent("赫赫这是内容\n这是第二行\n这是第3行\n这是第4行\n这是第5行\n这是第6行\n这是第7行\n这是第8行\n这是第9行\n");
 		tm.setDetailUrl("http://www.baidu.com");
-		String toUsers = userid+",4395736409,4395739202,4395736406";
+		tm.setStatus("已处理");
+		tm.setStatusColor("#FF0000");
+		List<Map<String, String>> fields = new ArrayList<Map<String, String>>();
+		Map<String,String> m0 = new HashMap<String,String>();
+		m0.put("单价", "$100");
+		fields.add(m0);
+		Map<String,String> m1 = new HashMap<String,String>();
+		m1.put("数量", "2");
+		fields.add(m1);
+		Map<String,String> m2 = new HashMap<String,String>();
+		m2.put("价格", "$200");
+		fields.add(m2);
+		Map<String,String> m3 = new HashMap<String,String>();
+		m3.put("价格2", "$200");
+		fields.add(m3);
+		Map<String,String> m4 = new HashMap<String,String>();
+		m4.put("价格3", "$200");
+		fields.add(m4);
+		Map<String,String> m5 = new HashMap<String,String>();
+		m5.put("说明", "大赛分为二玩儿玩儿玩儿娃儿34 玩儿玩儿娃儿");
+		fields.add(m5);
+		Map<String,String> m6 = new HashMap<String,String>();
+		m6.put("收货地址", "江苏省南京市建邺区新城科技园E31栋10层");
+		fields.add(m6);
+		tm.setFields(fields );
+		String toUsers = userid+",4395736409,4395739202,4395736406,4378955001";
 		tm.setToUsers(toUsers);
 		sendTMsg(tm );		
 		JSONArray ja = new JSONArray();
@@ -792,7 +823,7 @@ public class PlatformUtil {
 //		removeSubAccount();
 		//4328621782 朱建宇   4328625706 靖守彦
 		String userToken = "4328625706"; // 4395732306 4395733301 4395733556		
-//		sendImgMsg("9151315548882010969");
+//		sendImgMsg(userid+"");
 //		// String accessToken = platformUtil.accessTokenWithCatch();
 //		// System.out.println(accessToken);
 //		// platformUtil.userInfo("4395733301");
@@ -810,7 +841,41 @@ public class PlatformUtil {
 		 
 		 String type="2";
 		 String file="d:/Chrysanthemum.jpg";
-		 PlatformUtil.resourceUpload(type, file);
+//		 PlatformUtil.resourceUpload(type, file);
+		 
+		 String imgURL= "http://test.linkdood.cn:10080/hd2/0/appimage/20160428/1105/head_qf68_f089000000112a01.jpg";
+		 Image image = new Image();
+		 image.setFileName(imgURL.substring(imgURL.lastIndexOf("/")+1));
+		 image.setThumbUrl(imgURL);
+		 image.setMediaUrl(imgURL);
+		 Article a1 = new Article();
+		 a1.setIndex(0);
+		 a1.setTitle("测试");
+		 a1.setDescription("这是一个测试阿");
+		 a1.setPicUrl("/hd2/0/appimage/20160428/1105/head_qf68_f089000000112a01.jpg");
+		 a1.setUrl("http://www.baidu.com");
+		 Article a2 = new Article();
+		 a2.setIndex(1);
+		 a2.setTitle("测试2");
+		 a2.setDescription("这是一个测试阿22");
+		 a2.setPicUrl("hd2/0/appimage/20160428/1105/head_qf68_f089000000112a01.jpg");
+		 a2.setUrl("http://www.baidu.com");
+		 Article a3 = new Article();
+		 a3.setIndex(2);
+		 a3.setTitle("测试3");
+		 a3.setDescription("这是一个测试阿22");
+		 a3.setPicUrl("http://test.linkdood.cn:10080/hd2/0/appimage/20160428/1105/head_qf68_f089000000112a01.jpg");
+		 a3.setUrl("http://www.baidu.com");
+		 List<Article> articles = new ArrayList<Article>();
+//		 articles.add(a1);
+		 articles.add(a2);
+//		 articles.add(a3);
+		 Message message = new Message();
+		 message.setReceTargetID(userid+"");
+		 message.setSendUserID(appID);
+		 sendArticleMsg(message , articles);
+//		 sendImageMsg(message,image);
+		 
 //		 File f =new File(file);
 //		 PlatformUtil.resourceQuery("2",1, 100);
 

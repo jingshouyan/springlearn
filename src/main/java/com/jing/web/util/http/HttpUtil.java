@@ -579,14 +579,14 @@ public class HttpUtil {
 	}
 	
 	
+	private static String base = "http://vrvnanjing.linkdood.cn/server-imrobot";
+	
 	public static void getUserid(){
-		String url = "http://test.linkdood.cn:10080/server-imrobot/email/getUserId.do";
+		String url = base+"/email/getUserId.do";
 		println(url);
 		// String url = "https://www.baidu.com";
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("clientKey", "f6NwKeujubgR5GOQvCp2R5OhOi06lMCXSPFSkFaMPgRGOB6JEmudkY1MH8k0b21U");
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("ticket", "83a674c1f3af45eaa84c5c5c3c4c0fd5");
+		params.put("clientKey", "i6gTMNbf_rN2B5XTwyg0xEfz0gnfzLUizXUWCt11tahGOB6JEmudkY1MH8k0b21U");
 		JSONObject object  = new JSONObject();
 		object.put("username", "944373279@qq.com");
 		object.put("userid", 4395731455l);
@@ -599,40 +599,40 @@ public class HttpUtil {
 	}
 
 	public static void save(){
-		String url = "http://vrv.linkdood.cn/server-imrobot/email/saveEmailInfo.do";
+		String url = base+"/email/saveEmailInfo.do";
 		println(url);
 		// String url = "https://www.baidu.com";
 		Map<String, String> params = new HashMap<String, String>();
 		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("ticket", "1544cc868091f0117c5e96e49559941fd7e6e6476a1");
+		headers.put("ticket", "1547952a32940f1ae9663074be7816d752423e4297f");
 		JSONObject object  = new JSONObject();
-		object.put("username", "944373279@qq.com");
-		object.put("userid", 4395731455l);
-		object.put("password", "asbkhxloiwwhbebc");
-		object.put("pop3Host", "pop.qq.com");
-		object.put("pop3Port", 995);
-		object.put("userid", 4395731455l);
+		object.put("username", "jingshouyan@vrvmail.com.cn");
+		object.put("userid", 4378954982l);
+		object.put("password", "stj6722913");
+		object.put("host", "vrvmail.com.cn");
+		object.put("port", 143);
+		object.put("protocol", "imap");
 		Response response = postJson(url, object, headers);
 		println(response);
 	}
 
 	
 	public static void del(){
-		String url = "http://test.linkdood.cn:10080/server-imrobot/email/delEmailInfo.do";
+		String url = base+"/email/delEmailInfo.do";
 		println(url);
 		// String url = "https://www.baidu.com";
 		Map<String, String> params = new HashMap<String, String>();
 		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("ticket", "1544cc868091f0117c5e96e49559941fd7e6e6476a1");
+		headers.put("ticket", "1547952a32940f1ae9663074be7816d752423e4297f");
 		JSONObject object  = new JSONObject();
 		object.put("username", "944373279@qq.com");
-		object.put("userid", 4395731455l);
+		object.put("userid", 4378954982l);
 		Response response = postJson(url, object, headers);
 		println(response);
 	}
 	public static void main(String[] args) {
-		getUserid();
-//		save();
+//		getUserid();
+		save();
 //		del();
 	}
 
