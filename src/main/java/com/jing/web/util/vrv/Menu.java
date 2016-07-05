@@ -26,7 +26,7 @@ public class Menu {
 	private String name;
 	private String key;
 	private String url;
-	private List<Menu> sub_menus;
+	private List<Menu> sub_menu;
 	
 	public String getType() {
 		return type;
@@ -52,11 +52,11 @@ public class Menu {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public List<Menu> getSub_menus() {
-		return sub_menus;
+	public List<Menu> getSub_menu() {
+		return sub_menu;
 	}
-	public void setSub_menus(List<Menu> sub_menus) {
-		this.sub_menus = sub_menus;
+	public void setSub_menu(List<Menu> sub_menu) {
+		this.sub_menu = sub_menu;
 	}
 }
 

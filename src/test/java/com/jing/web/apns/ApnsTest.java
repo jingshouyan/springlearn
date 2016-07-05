@@ -79,7 +79,7 @@ public class ApnsTest {
 	public static void cad(){
 		Apns apns = new Apns();
 		apns.setCertpwd("123456");
-		apns.setCerttopic("cn.vrv.sdk");
+		apns.setCerttopic("cn.vrv.sdk2");
 		apns.setCerttype("prod");
 //		apns.setCertid(4l);
 		String file = "d:/cn.vrv.sdk(发布).p12";
@@ -104,11 +104,17 @@ public class ApnsTest {
 
 	}
 	
+	public static void del(long certid){
+		Apns apns = new Apns();
+		apns.setCertid(certid);
+		delete(apns);
+	}
+	
 	
 	public static void main(String[] args) {
 		ApnsTest a = new ApnsTest();
 		List<AsynInvoker<ApnsTest>> asynInvokers = new ArrayList<AsynInvoker<ApnsTest>>();
-		for(int i = 0;i<1;i++){			
+		for(long i = 49;i<50;i++){			
 			AsynInvoker<ApnsTest> asynInvoker = new AsynInvoker<>(a, "cad");
 			asynInvokers.add(asynInvoker);			
 		}
@@ -117,6 +123,9 @@ public class ApnsTest {
 		}
 		System.out.println(successCount);
 		
+//		for(long i =1000;i<2746;i++){
+//			del(i);
+//		}
 //		Random r = new Random();
 //		long now = System.currentTimeMillis();
 //		String s =  Long.toHexString(now)+UUID.randomUUID().toString().replace("-", "");

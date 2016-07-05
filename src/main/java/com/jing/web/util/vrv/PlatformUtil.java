@@ -49,20 +49,27 @@ public class PlatformUtil {
 //	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
 //	public static long userid = 4328625706l;
 	
-	
-//	private static String appID = "4395730591";// 4395733556   4328612680
-//	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
-//	private static String entID = "262";	
+//	private static String appID = "4328613480";// 4395733556   4328612680
+//	private static String appSecret = "Ja0_KqRH7v5kb0T_VmIb-w";
+//	private static String entID = "258";	
 //	private static String token="randomString123";
-//	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
-//	public static long userid = 4395736151l;
+//	public static final String BASE_URL = "http://vrv.linkdood.cn/platform/platform/";// http://192.168.0.60:3801/platform/platform/
+//	public static long userid = 4328625706l;
 	
-	private static String appID = "4378953375";// 4395733556   4328612680
-	private static String appSecret = "P6OCY3dxazvswNcO1i6zxw";
-	private static String entID = "261";	
+	
+	private static String appID = "4395730591";// 4395733556   4328612680
+	private static String appSecret = "WRiTpNxyC5hcZXN9fBKXew";
+	private static String entID = "262";	
 	private static String token="randomString123";
-	public static final String BASE_URL = "http://vrvnanjing.linkdood.cn/platform/platform/";
-	public static long userid = 4378955030l;//4378955030 4378954982
+	public static final String BASE_URL = "http://test.linkdood.cn:10080/platform/platform/";
+	public static long userid = 4395736151l;
+	
+//	private static String appID = "4378953375";// 4395733556   4328612680
+//	private static String appSecret = "P6OCY3dxazvswNcO1i6zxw";
+//	private static String entID = "261";	
+//	private static String token="randomString123";
+//	public static final String BASE_URL = "http://vrvnanjing.linkdood.cn/platform/platform/";
+//	public static long userid = 4378955030l;//4378955030 4378954982
 	
 	
 //	private static String appID = "4395730591";// 4395733556   4328612680
@@ -964,7 +971,7 @@ public class PlatformUtil {
 //		menus.add(menu3);
 		menus.add(menu2);
 //		ms.add(menu32);
-
+		userToken("vmdjWszuLlc9UJ19mmIMNjuNHppj_NpuZCfvjAUNMZpGOB6JEmudkY1MH8k0b21U");
 //		PlatformUtil.appUpdateAppInfo(menus);
 //		PlatformUtil.accessToken();
 		

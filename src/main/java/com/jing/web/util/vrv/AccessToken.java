@@ -1,12 +1,3 @@
-/**
- * Project Name:springlearn
- * File Name:AccessToken.java
- * Package Name:com.jing.web.util.vrv
- * Date:2016年2月19日上午9:20:11
- * Copyright (c) 2016, chenzhou1025@126.com All Rights Reserved.
- *
-*/
-
 package com.jing.web.util.vrv;
 /**
  * ClassName:AccessToken <br/>

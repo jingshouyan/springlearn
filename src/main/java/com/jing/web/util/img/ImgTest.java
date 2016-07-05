@@ -59,13 +59,13 @@ public class ImgTest {
 		List<File> files = getAllFile(root);
 		for(File file:files){
 			String filePath = file.getPath();
-			if(filePath.endsWith(".jpg")){
+			if(filePath.endsWith(".png")){
 				System.out.println(filePath);
 				String toPath = toDir+filePath.substring(dir.length());
 				
 				System.out.println(toPath);
 				ImgCompress imgCompress = new ImgCompress(filePath, toPath);
-				imgCompress.resizeByWidth(1080);
+				imgCompress.resizeByWidth(720);
 //				png2Jpg(filePath,toPath);
 			}			
 		}

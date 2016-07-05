@@ -79,4 +79,9 @@ public class User extends AbstractJModel implements IRedisSupport{
 	public void setNames(List<String> names) {
 		this.names = names;
 	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", age=" + age + ", gender=" + gender + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + ", version=" + version + ", names=" + names + "]";
+	}
 }

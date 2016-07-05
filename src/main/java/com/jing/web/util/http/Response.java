@@ -26,6 +26,7 @@ public class Response {
 	private String reasonPhrase;
 	private String body;
 	private Map<String,String> headers;
+	private Exception exception;
 	public String getBody() {
 		return body;
 	}
@@ -49,6 +50,12 @@ public class Response {
 	}
 	public void setReasonPhrase(String reasonPhrase) {
 		this.reasonPhrase = reasonPhrase;
+	}
+	public Exception getException() {
+		return exception;
+	}
+	public void setException(Exception exception) {
+		this.exception = exception;
 	}
 }
 
