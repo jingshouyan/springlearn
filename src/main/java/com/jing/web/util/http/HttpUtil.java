@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
 
@@ -41,7 +41,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -533,7 +535,7 @@ public class HttpUtil {
 			while ((len = fileIs.read(bytes)) != -1) {
 				dos.write(bytes, 0, len);
 				System.out.println("上传中>>>"+len);
-//				Thread.sleep(100);
+				Thread.sleep(100);
 			}
 			fileIs.close();
 			dos.write(LINE_END.getBytes());
@@ -710,8 +712,11 @@ public class HttpUtil {
 					return true;
 				}
 			}).build();
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
+			@SuppressWarnings("deprecation")
+			X509HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext,hostnameVerifier);
 			client = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+			
 		} catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
 			e.printStackTrace();
 		}
